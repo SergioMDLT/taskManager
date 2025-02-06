@@ -34,6 +34,11 @@ public class TaskService implements ITaskService{
     }
 
     @Override
+    public List<Task> getPendingTasks() {
+        return taskRepository.findByCompletedFalse();
+    }
+
+    @Override
     public Task createTask(Task task) {
        return taskRepository.save(task);
     }

@@ -9,5 +9,6 @@ import com.example.taskManager.model.Task;
 public interface TaskRepository extends JpaRepository<Task, Integer>{
     Optional<Task> findByTitle( String title );
     List<Task> findByCompletedTrue();
+    List<Task> findByCompletedFalse();
     void deleteByTitle( String title );
 }

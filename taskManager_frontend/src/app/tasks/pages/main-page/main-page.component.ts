@@ -1,0 +1,22 @@
+import { Component, OnInit } from '@angular/core';
+import { Task } from '../../models/task';
+import { TasksService } from '../../services/tasks.service';
+
+@Component({
+  selector: 'tasks-main-page',
+  standalone: false,
+  templateUrl: './main-page.component.html',
+  styleUrl: './main-page.component.scss'
+})
+export class MainPageComponent implements OnInit {
+
+  public tasks: Task[] = [];
+
+  constructor ( private readonly tasksService: TasksService ) { }
+
+  ngOnInit(): void {
+    this.tasksService.getPending()
+      .subscribe( tasks => this.tasks = tasks );
+  }
+
+}

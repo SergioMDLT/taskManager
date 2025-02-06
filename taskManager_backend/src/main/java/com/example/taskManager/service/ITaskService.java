@@ -9,6 +9,7 @@ public interface ITaskService {
     public Task getTaskById( Integer id );
     public Task getTaskByTitle( String title );
     public List<Task> getCompletedTasks();
+    public List<Task> getPendingTasks();
     public Task createTask( Task task );
     public Task updateTask ( Integer id, Task task);
     public void deleteTaskById( Integer id );

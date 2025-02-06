@@ -46,6 +46,11 @@ public class TaskController {
         return this.taskService.getCompletedTasks();
     }
 
+    @GetMapping("/tasks/pending")
+    public List<Task> getPendingTasks(){
+        return this.taskService.getPendingTasks();
+    }
+
     @PostMapping("/tasks")
     public Task createTask( @RequestBody Task task ){
         return taskService.createTask(task);
