@@ -1,9 +1,6 @@
 package com.example.taskManager.model;
 
-import com.example.taskManager.config.BooleanConverter;
-
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,8 +22,10 @@ public class Task {
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     @Column( name = "id" )
     Integer id;
+    @Column( name = "title" )
     String title;
+    @Column( name = "description" )
     String description;
-    //@Convert(converter = BooleanConverter.class)
+    @Column( name = "completed" )
     Boolean completed;
 }
