@@ -6,18 +6,25 @@ import { TasksTableComponent } from './components/tasks-table/tasks-table.compon
 import { SharedModule } from '../shared/shared.module';
 import { CommonModule } from '@angular/common';
 import { TasksRoutingModule } from './tasks-routing.module';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
   declarations: [
-    MainPageComponent,
-    HistoryPageComponent,
     CreatePageComponent,
+    HistoryPageComponent,
+    MainPageComponent,
     TasksTableComponent
   ],
-  exports: [],
+  exports: [
+    CreatePageComponent,
+    HistoryPageComponent,
+    MainPageComponent,
+    TasksTableComponent
+  ],
   imports: [
     CommonModule,
+    HttpClientModule,
     SharedModule,
     TasksRoutingModule
   ],

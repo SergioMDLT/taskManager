@@ -17,7 +17,7 @@ import com.example.taskManager.model.Task;
 import com.example.taskManager.service.TaskService;
 
 @RestController
-@RequestMapping( "taskManager" )
+@RequestMapping( "/tasks" )
 @CrossOrigin( value = "http://localhost:4200" )
 public class TaskController {
     

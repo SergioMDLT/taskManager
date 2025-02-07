@@ -4,6 +4,8 @@ import { BrowserModule, provideClientHydration, withEventReplay } from '@angular
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
+import { TasksModule } from './tasks/tasks.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -12,7 +14,9 @@ import { SharedModule } from './shared/shared.module';
   imports: [
     AppRoutingModule,
     BrowserModule,
-    SharedModule
+    HttpClientModule,
+    SharedModule,
+    TasksModule
   ],
   providers: [
     provideClientHydration(withEventReplay())

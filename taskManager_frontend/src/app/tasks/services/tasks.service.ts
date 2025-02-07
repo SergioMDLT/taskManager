@@ -6,9 +6,9 @@ import { Task } from '../models/task';
 @Injectable({ providedIn: 'root' })
 export class TasksService {
 
-  private appUrl: string = 'http://localhost:8080/tasks';
+  private readonly appUrl: string = 'http://localhost:8080/tasks';
 
-  constructor( private http: HttpClient ) { }
+  constructor( private readonly http: HttpClient ) { }
 
   getPending(): Observable<Task[]> {
     const url = `${ this.appUrl }/pending`;
