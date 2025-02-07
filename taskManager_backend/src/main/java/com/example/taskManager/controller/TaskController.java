@@ -26,47 +26,47 @@ public class TaskController {
         this.taskService = taskService;
     }
     
-    @GetMapping("/tasks")
+    @GetMapping
     public List<Task> getAllTasks(){
         return this.taskService.getAllTasks();
     }
 
-    @GetMapping("/tasks/{id}")
+    @GetMapping("/{id}")
     public Task getTaskById( @PathVariable Integer id ){
         return this.taskService.getTaskById( id );
     }
 
-    @GetMapping("/tasks/by-title")
+    @GetMapping("/by-title")
     public Task getTaskByTitle( @RequestParam String title ){
         return this.taskService.getTaskByTitle( title );
     }
 
-    @GetMapping("/tasks/completed")
+    @GetMapping("/completed")
     public List<Task> getCompletedTasks(){
         return this.taskService.getCompletedTasks();
     }
 
-    @GetMapping("/tasks/pending")
+    @GetMapping("/pending")
     public List<Task> getPendingTasks(){
         return this.taskService.getPendingTasks();
     }
 
-    @PostMapping("/tasks")
+    @PostMapping
     public Task createTask( @RequestBody Task task ){
         return taskService.createTask(task);
     }
 
-    @PutMapping("/tasks/{id}")
+    @PutMapping("/{id}")
     public Task updateTask( @PathVariable Integer id, @RequestBody Task task){
         return taskService.updateTask( id, task );
     }
 
-    @DeleteMapping("/tasks/{id}")
+    @DeleteMapping("/{id}")
     public void deleteTaskById( @PathVariable Integer id ){
         taskService.deleteTaskById( id );
     }
 
-    @DeleteMapping("/tasks/by-title")
+    @DeleteMapping("/by-title")
     public void deleteTaskByTitle( @RequestParam String title ){
         taskService.deleteTaskByTitle( title );
     }

@@ -3,11 +3,14 @@ package com.example.taskManager.service;
 import com.example.taskManager.model.Task;
 import com.example.taskManager.repository.TaskRepository;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TaskService implements ITaskService{
 
+    @Autowired
     private final TaskRepository taskRepository;
     public TaskService( TaskRepository taskRepository ) {
          this.taskRepository = taskRepository;
