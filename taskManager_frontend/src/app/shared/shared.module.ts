@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { SearchboxComponent } from './components/searchbox/searchbox.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';;
 import { TaskFormComponent } from './components/task-form/task-form.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { TaskFormComponent } from './components/task-form/task-form.component';
   ],
   imports: [
     CommonModule,
-    RouterModule
+    ReactiveFormsModule,
+    RouterModule,
   ],
   providers: [],
 })

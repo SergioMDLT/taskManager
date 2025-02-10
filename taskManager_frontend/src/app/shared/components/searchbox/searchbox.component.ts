@@ -10,6 +10,7 @@ import { debounceTime, Subject, Subscription } from 'rxjs';
 export class SearchboxComponent implements OnInit, OnDestroy {
   private readonly debouncer: Subject<string> = new Subject<string>();
   private debouncerSubscription?: Subscription;
+  public isLoading: boolean = false;
 
   @Output()
   public onValue: EventEmitter<string> = new EventEmitter<string>();
@@ -35,7 +36,10 @@ export class SearchboxComponent implements OnInit, OnDestroy {
     this.onValue.emit( value );
   }
 
-  onKeyPress(searchTerm: string) {
+  onKeyPress( searchTerm: string ): void {
+    this.isLoading = true;
     this.debouncer.next( searchTerm );
+    setTimeout(() => this.isLoading = false, 500);
   }
+
 }

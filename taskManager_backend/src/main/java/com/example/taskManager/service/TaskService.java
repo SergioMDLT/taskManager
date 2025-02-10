@@ -4,13 +4,11 @@ import com.example.taskManager.model.Task;
 import com.example.taskManager.repository.TaskRepository;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TaskService implements ITaskService{
 
-    @Autowired
     private final TaskRepository taskRepository;
     public TaskService( TaskRepository taskRepository ) {
          this.taskRepository = taskRepository;
@@ -22,49 +20,36 @@ public class TaskService implements ITaskService{
     }
 
     @Override
-    public Task getTaskById(Integer id) {
-        return taskRepository.findById(id).orElse(null);
+    public Task getTaskById( Integer id ) {
+        return taskRepository.findById( id ).orElse(null);
     }
 
     @Override
-    public Task getTaskByTitle(String title) {
-        return taskRepository.findByTitle(title).orElse(null);
+    public List<Task> getTaskByTitle( String title ) {
+        return taskRepository.findByTitleContainingIgnoreCase( title );
     }
 
     @Override
-    public List<Task> getCompletedTasks() {
-        return taskRepository.findByCompletedTrue();
+    public List<Task> getByCompleted( Boolean completed ) {
+        return taskRepository.findByCompleted( completed );
     }
 
     @Override
-    public List<Task> getPendingTasks() {
-        return taskRepository.findByCompletedFalse();
+    public Task createTask( Task task ) {
+       return taskRepository.save( task );
     }
 
     @Override
-    public Task createTask(Task task) {
-       return taskRepository.save(task);
+    public Task updateTaskStatus( Integer id ) {
+        Task task = taskRepository.findById( id )
+            .orElseThrow(() -> new IllegalArgumentException("Task not found with ID: " + id));
+        task.setCompleted(!task.getCompleted());
+        return taskRepository.save( task );
     }
 
     @Override
-    public Task updateTask(Integer id, Task taskDetails) {
-        Task task = taskRepository.findById(id).orElse(null);
-        if (task != null) {
-            task.setTitle(taskDetails.getTitle());
-            task.setDescription(taskDetails.getDescription());
-            task.setCompleted(taskDetails.getCompleted());
-            return taskRepository.save(task);
-        }
-        return null;
+    public void deleteTaskById( Integer id ) {
+        taskRepository.deleteById( id );
     }
-
-    @Override
-    public void deleteTaskById(Integer id) {
-        taskRepository.deleteById(id);
-    }
-
-    @Override
-    public void deleteTaskByTitle(String title) {
-        taskRepository.deleteByTitle( title );
-    }
+    
 }

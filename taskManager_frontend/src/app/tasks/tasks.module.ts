@@ -5,6 +5,7 @@ import { CreatePageComponent } from './pages/create-page/create-page.component';
 import { TasksTableComponent } from './components/tasks-table/tasks-table.component';
 import { SharedModule } from '../shared/shared.module';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import { TasksRoutingModule } from './tasks-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -25,6 +26,7 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [
     CommonModule,
     HttpClientModule,
+    MatIconModule,
     SharedModule,
     TasksRoutingModule
   ],

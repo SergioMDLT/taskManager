@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, delay, Observable, of } from 'rxjs';
+import { catchError, delay, Observable, of, throwError } from 'rxjs';
 import { Task } from '../models/task';
 
 @Injectable({ providedIn: 'root' })
@@ -10,30 +10,41 @@ export class TasksService {
 
   constructor( private readonly http: HttpClient ) { }
 
-  getPending(): Observable<Task[]> {
-    const url = `${ this.appUrl }/pending`;
-    return this.http.get<Task[]>( url )
+  getTasks( params?: { completed?: boolean; id?: number; title?: string } ): Observable<Task[]> {
+    return this.http.get<Task[]>( this.appUrl, { params } ).pipe(
+      catchError((error) => {
+        console.error('Error fetching tasks:', error);
+        return of([]);
+      }),
+    );
+  }
+
+  createTask( title: string, description: string ): Observable<Task> {
+    const task = {
+      title: title,
+      description: description,
+      completed: false
+    };
+
+    return this.http.post<Task>( this.appUrl, task )
       .pipe(
-        catchError( error => of([])),
-        delay( 500 ),
+        catchError( error => throwError(() => new Error( 'Failed to create task' ))),
       );
   }
 
-  getHistory(): Observable<Task[]> {
-    return this.http.get<Task[]>( this.appUrl )
+  deleteTask( id: number ): Observable<Task> {
+    return this.http.delete<Task>( `${ this.appUrl }/${ id }` )
       .pipe(
-        catchError( error => of([])),
-        delay( 500 ),
+        catchError( error => throwError(() => new Error( 'Failed to delete task' ))),
       );
   }
 
-  searchByTitle( title: string ): Observable<Task[]> {
-    const url = `${ this.appUrl }/by-title/${ title }`; //cambiar la búsqueda en el back
-    return this.http.get<Task[]>( url )
+  updateTask( id: number ): Observable<Task> {
+    return this.http.put<Task>(`${this.appUrl}/${id}`, {})
       .pipe(
-          catchError( error => of([])),
-          delay( 500 ),
+        catchError(error => throwError(() => new Error('Failed to update task'))),
       );
   }
+
 
 }

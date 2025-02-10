@@ -12,11 +12,30 @@ export class MainPageComponent implements OnInit {
 
   public tasks: Task[] = [];
 
-  constructor ( private readonly tasksService: TasksService ) { }
+  constructor ( private readonly taskService: TasksService ) { }
 
   ngOnInit(): void {
-    this.tasksService.getPending()
+    this.loadTasks();
+  }
+
+  loadTasks(): void {
+    this.taskService.getTasks( { completed: false } )
       .subscribe( tasks => this.tasks = tasks );
+  }
+
+  onSearch( term: string ): void {
+    if ( term.trim().length === 0 ){
+      this.loadTasks();
+      return;
+    }
+
+    this.taskService.getTasks( { title: term })
+      .subscribe({
+        next: (tasks) => {
+          this.tasks = tasks;
+        },
+        error: (err) => console.error('Error searching tasks:', err),
+      });
   }
 
 }

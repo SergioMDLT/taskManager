@@ -25,51 +25,37 @@ public class TaskController {
     public TaskController( TaskService taskService ){
         this.taskService = taskService;
     }
-    
+
     @GetMapping
-    public List<Task> getAllTasks(){
-        return this.taskService.getAllTasks();
-    }
-
-    @GetMapping("/{id}")
-    public Task getTaskById( @PathVariable Integer id ){
-        return this.taskService.getTaskById( id );
-    }
-
-    @GetMapping("/by-title")
-    public Task getTaskByTitle( @RequestParam String title ){
-        return this.taskService.getTaskByTitle( title );
-    }
-
-    @GetMapping("/completed")
-    public List<Task> getCompletedTasks(){
-        return this.taskService.getCompletedTasks();
-    }
-
-    @GetMapping("/pending")
-    public List<Task> getPendingTasks(){
-        return this.taskService.getPendingTasks();
+    public List<Task> getTasks(
+        @RequestParam( required = false ) Integer id,
+        @RequestParam( required = false ) String title,
+        @RequestParam( required = false ) Boolean completed
+    ) {
+        if ( id != null ) {
+            return List.of( taskService.getTaskById( id ) );
+        }
+        if ( title != null ) {
+            return taskService.getTaskByTitle( title );
+        }
+        if ( completed != null ) {
+            return completed ? taskService.getByCompleted( true ) : taskService.getByCompleted( false );
+        }
+        return taskService.getAllTasks();
     }
 
     @PostMapping
     public Task createTask( @RequestBody Task task ){
-        return taskService.createTask(task);
+        return taskService.createTask( task );
     }
 
     @PutMapping("/{id}")
-    public Task updateTask( @PathVariable Integer id, @RequestBody Task task){
-        return taskService.updateTask( id, task );
+    public Task updateTask( @PathVariable Integer id ){
+        return taskService.updateTaskStatus( id );
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTaskById( @PathVariable Integer id ){
+    public void deleteTask( @PathVariable Integer id ) {
         taskService.deleteTaskById( id );
     }
-
-    @DeleteMapping("/by-title")
-    public void deleteTaskByTitle( @RequestParam String title ){
-        taskService.deleteTaskByTitle( title );
-    }
-
-
 }

@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'shared-task-form',
@@ -8,10 +8,13 @@ import { Component } from '@angular/core';
   styleUrl: './task-form.component.scss'
 })
 export class TaskFormComponent {
+
   taskForm: FormGroup;
 
-  constructor( private readonly fb: FormBuilder ) {
-    this.taskForm = this.fb.group({
+  @Output() formSubmit = new EventEmitter<{ title: string; description: string }>();
+
+  constructor( private readonly formBuilder: FormBuilder ) {
+    this.taskForm = this.formBuilder.group({
       title: [ '', Validators.required ],
       description: [ '' ]
     });
@@ -19,8 +22,8 @@ export class TaskFormComponent {
 
   onSubmit() {
     if ( this.taskForm.valid ) {
-      console.log( 'Nueva Tarea:', this.taskForm.value );
-      this.taskForm.reset(); // Reinicia el formulario después de enviar
+      this.formSubmit.emit( this.taskForm.value );
+      this.taskForm.reset();
     }
   }
 }

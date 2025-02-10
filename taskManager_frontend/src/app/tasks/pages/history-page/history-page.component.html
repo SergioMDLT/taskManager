@@ -4,8 +4,8 @@
 <div class="row">
 
   <div class="col">
-    <shared-searchbox>
-
+    <shared-searchbox
+    (onDebounce)="onSearch( $event )">
     </shared-searchbox>
 
   </div>
@@ -13,7 +13,7 @@
   <div class="row">
     <div class="col">
       <hr>
-      <tasks-table></tasks-table>
+      <tasks-table [tasks]="tasks"></tasks-table>
     </div>
   </div>
 

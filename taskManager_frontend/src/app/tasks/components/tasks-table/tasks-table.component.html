@@ -11,6 +11,7 @@
         <th>Task</th>
         <th>Description</th>
         <th>Status</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -21,6 +22,19 @@
         <td>
           <i *ngIf="!task.completed" class="fas fa-times text-green-500">To do</i>
           <i *ngIf="task.completed" class="fas fa-check text-red-500">Completed</i>
+        </td>
+        <td>
+          <button
+          mat-button color="warn"
+          (click)="onUpdateTask( task.id )">
+            <mat-icon>update</mat-icon>
+          </button>
+          <button
+          mat-button color="warn"
+          (click)="onDeleteTask( task.id )">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>
