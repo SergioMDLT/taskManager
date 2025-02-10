@@ -2,17 +2,20 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SearchboxComponent } from './components/searchbox/searchbox.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';;
+import { TaskFormComponent } from './components/task-form/task-form.component';
 
 
 @NgModule({
   declarations: [
     SidebarComponent,
-    SearchboxComponent
+    SearchboxComponent,
+    TaskFormComponent
   ],
   exports: [
     SidebarComponent,
-    SearchboxComponent
+    SearchboxComponent,
+    TaskFormComponent
   ],
   imports: [
     CommonModule,

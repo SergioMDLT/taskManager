@@ -10,7 +10,7 @@
         <th>#</th>
         <th>Task</th>
         <th>Description</th>
-        <th>Pending</th>
+        <th>Status</th>
       </tr>
     </thead>
     <tbody>
@@ -19,8 +19,8 @@
         <td>{{ task.title }}</td>
         <td>{{ task.description }}</td>
         <td>
-          <i *ngIf="!task.completed" class="fas fa-times text-green-500"></i>
-          <i *ngIf="task.completed" class="fas fa-check text-red-500"></i>
+          <i *ngIf="!task.completed" class="fas fa-times text-green-500">To do</i>
+          <i *ngIf="task.completed" class="fas fa-check text-red-500">Completed</i>
       </tr>
     </tbody>
   </table>
