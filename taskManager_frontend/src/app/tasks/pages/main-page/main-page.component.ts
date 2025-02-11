@@ -13,6 +13,10 @@ export class MainPageComponent implements OnInit {
 
   public tasks: Task[] = [];
   public isLoading: boolean = false;
+  public searchTerm: string = '';
+
+  private readonly searchKey = 'main-search-term';
+  private readonly tasksKey = 'main-tasks';
 
   constructor (
     private readonly taskService: TasksService,
@@ -20,7 +24,32 @@ export class MainPageComponent implements OnInit {
    ) { }
 
   ngOnInit(): void {
-    this.loadTasks();
+    this.loadStateFromStorage();
+  }
+
+  private isLocalStorageAvailable(): boolean {
+    return typeof localStorage !== 'undefined';
+  }
+
+  private loadStateFromStorage(): void {
+    if ( !this.isLocalStorageAvailable() ) {
+      this.loadTasks();
+      return;
+    }
+
+    const storedSearch = localStorage.getItem( this.searchKey) ;
+    const storedTasks = localStorage.getItem( this.tasksKey );
+
+    if ( storedSearch ) {
+      this.searchTerm = storedSearch;
+      if ( storedTasks ) {
+        this.tasks = JSON.parse( storedTasks );
+        return;
+      }
+      this.onSearch( storedSearch );
+    } else {
+      this.loadTasks();
+    }
   }
 
   loadTasks(): void {
@@ -29,6 +58,7 @@ export class MainPageComponent implements OnInit {
       next: ( tasks ) => {
         setTimeout(() => {
           this.tasks = tasks;
+          this.saveTasksToStorage();
           this.isLoading = false;
         }, 500);
       },
@@ -41,15 +71,23 @@ export class MainPageComponent implements OnInit {
   }
 
   onSearch( term: string ): void {
-    if ( term.trim().length === 0 ){
+    this.searchTerm = term;
+
+    if ( term.trim().length === 0 ) {
+      localStorage.removeItem( this.searchKey );
+      localStorage.removeItem( this.tasksKey );
       this.loadTasks();
       return;
     }
+
+    localStorage.setItem( this.searchKey, term );
     this.isLoading = true;
+
     this.taskService.getTasks({ title: term }).subscribe({
       next: ( tasks ) => {
         setTimeout(() => {
           this.tasks = tasks;
+          this.saveTasksToStorage();
           this.isLoading = false;
         }, 500);
       },
@@ -59,6 +97,12 @@ export class MainPageComponent implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  private saveTasksToStorage(): void {
+    if ( this.isLocalStorageAvailable() ) {
+      localStorage.setItem( this.tasksKey, JSON.stringify( this.tasks ) );
+    }
   }
 
 }

@@ -5,6 +5,7 @@
 
   <div class="col">
     <shared-searchbox
+    [searchTerm]="searchTerm"
     (onDebounce)="onSearch( $event )">
     </shared-searchbox>
 

@@ -3,6 +3,7 @@
   id="search-box"
   type="text"
   class="form-control"
+  [value]="searchTerm"
   (keyup)="onKeyPress( txtInput.value )"
   #txtInput
   placeholder="Type to search..."
