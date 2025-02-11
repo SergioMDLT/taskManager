@@ -11,6 +11,7 @@ import { TasksService } from '../../services/tasks.service';
 export class HistoryPageComponent implements OnInit {
 
   public tasks: Task[] = [];
+  public isLoading: boolean = false;
 
   constructor( private readonly taskService: TasksService ) { }
 
@@ -19,8 +20,19 @@ export class HistoryPageComponent implements OnInit {
   }
 
   loadTasks(): void {
-    this.taskService.getTasks()
-      .subscribe( tasks => this.tasks = tasks );
+    this.isLoading = true;
+    this.taskService.getTasks().subscribe({
+      next: ( tasks ) => {
+        setTimeout(() => {
+          this.tasks = tasks;
+          this.isLoading = false;
+        }, 500);
+      },
+      error: ( err ) => {
+        console.error( 'Error loading tasks:', err );
+        this.isLoading = false;
+      },
+    });
   }
 
   onSearch( term: string ): void {
@@ -28,14 +40,17 @@ export class HistoryPageComponent implements OnInit {
       this.loadTasks();
       return;
     }
-
-    this.taskService.getTasks( { title: term })
-      .subscribe({
-        next: (tasks) => {
-          this.tasks = tasks;
-        },
-        error: (err) => console.error('Error searching tasks:', err),
-      });
+    this.isLoading = true;
+    this.taskService.getTasks({ title: term }).subscribe({
+      next: ( tasks ) => {
+        this.tasks = tasks;
+        this.isLoading = false;
+      },
+      error: ( err ) => {
+        console.error( 'Error searching tasks:', err );
+        this.isLoading = false;
+      },
+    });
   }
 
 }

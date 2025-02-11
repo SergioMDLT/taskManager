@@ -19,14 +19,14 @@ export class TasksTableComponent {
     this.tasksService.updateTask( id )
     .subscribe({
       next: ( updatedTask ) => {
-        console.log(`Task with id ${id} updated successfully`);
+        console.log( `Task with id ${id} updated successfully` );
         const index = this.tasks.findIndex(task => task.id === updatedTask.id);
         if (index !== -1) {
           this.tasks[index] = updatedTask;
         }
       },
       error: (err) => {
-        console.error('Error creating task:', err);
+        console.error('Error creating task: ', err);
       }
     });
   }
@@ -36,11 +36,11 @@ export class TasksTableComponent {
       this.tasksService.deleteTask( id )
       .subscribe({
         next: ( ) => {
-          console.log(`Task with id ${id} deleted successfully`);
+          console.log( `Task with id ${id} deleted successfully` );
           this.tasks = this.tasks.filter((task) => task.id !== id);
         },
         error: (err) => {
-          console.error('Error creating task:', err);
+          console.error('Error creating task: ', err);
         }
       });
     }

@@ -13,7 +13,15 @@
   <div class="row">
     <div class="col">
       <hr>
-      <tasks-table [tasks]="tasks"></tasks-table>
+
+      <div *ngIf="isLoading">
+        <shared-spinner></shared-spinner>
+      </div>
+
+      <div *ngIf="!isLoading">
+        <tasks-table [tasks]="tasks"></tasks-table>
+      </div>
+
     </div>
   </div>
 

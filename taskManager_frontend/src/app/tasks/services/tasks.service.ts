@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, delay, Observable, of, throwError } from 'rxjs';
+import { catchError, Observable, of, throwError } from 'rxjs';
 import { Task } from '../models/task';
 
 @Injectable({ providedIn: 'root' })
@@ -12,8 +12,8 @@ export class TasksService {
 
   getTasks( params?: { completed?: boolean; id?: number; title?: string } ): Observable<Task[]> {
     return this.http.get<Task[]>( this.appUrl, { params } ).pipe(
-      catchError((error) => {
-        console.error('Error fetching tasks:', error);
+      catchError(( error ) => {
+        console.error( 'Error fetching tasks:', error );
         return of([]);
       }),
     );
@@ -42,7 +42,7 @@ export class TasksService {
   updateTask( id: number ): Observable<Task> {
     return this.http.put<Task>(`${this.appUrl}/${id}`, {})
       .pipe(
-        catchError(error => throwError(() => new Error('Failed to update task'))),
+        catchError( error => throwError(() => new Error( 'Failed to update task' ))),
       );
   }
 
