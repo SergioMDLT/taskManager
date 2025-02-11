@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Task } from '../../models/task';
 import { TasksService } from '../../services/tasks.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'tasks-history-page',
@@ -13,7 +14,10 @@ export class HistoryPageComponent implements OnInit {
   public tasks: Task[] = [];
   public isLoading: boolean = false;
 
-  constructor( private readonly taskService: TasksService ) { }
+  constructor (
+      private readonly taskService: TasksService,
+      private readonly toastService: ToastService
+     ) { }
 
   ngOnInit(): void {
     this.loadTasks();
@@ -30,6 +34,7 @@ export class HistoryPageComponent implements OnInit {
       },
       error: ( err ) => {
         console.error( 'Error loading tasks:', err );
+        this.toastService.showError( 'Error loading tasks' );
         this.isLoading = false;
       },
     });
@@ -43,11 +48,14 @@ export class HistoryPageComponent implements OnInit {
     this.isLoading = true;
     this.taskService.getTasks({ title: term }).subscribe({
       next: ( tasks ) => {
-        this.tasks = tasks;
-        this.isLoading = false;
+        setTimeout(() => {
+          this.tasks = tasks;
+          this.isLoading = false;
+        }, 500);
       },
       error: ( err ) => {
         console.error( 'Error searching tasks:', err );
+        this.toastService.showError( 'Error searching tasks' );
         this.isLoading = false;
       },
     });

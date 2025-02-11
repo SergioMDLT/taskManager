@@ -7,6 +7,7 @@ import { SharedModule } from './shared/shared.module';
 import { TasksModule } from './tasks/tasks.module';
 import { HttpClientModule } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     AppRoutingModule,
     BrowserModule,
     HttpClientModule,
+    MatSnackBarModule,
     SharedModule,
     TasksModule
   ],

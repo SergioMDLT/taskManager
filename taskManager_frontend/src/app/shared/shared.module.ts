@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SearchboxComponent } from './components/searchbox/searchbox.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';;
-import { TaskFormComponent } from './components/task-form/task-form.component';
-import { ReactiveFormsModule } from '@angular/forms';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { TaskFormComponent } from './components/task-form/task-form.component';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
     TaskFormComponent,
   ],
   exports: [
+    MatSnackBarModule,
     SearchboxComponent,
     SidebarComponent,
     SpinnerComponent,
@@ -23,6 +25,7 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
   ],
   imports: [
     CommonModule,
+    MatSnackBarModule,
     ReactiveFormsModule,
     RouterModule,
   ],
