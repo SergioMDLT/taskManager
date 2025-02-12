@@ -13,4 +13,5 @@ public interface ITaskService {
     public Task createTask( Task task );
     public Task updateTaskStatus ( Integer id );
     public void deleteTaskById( Integer id );
+    public void updatePriority( Integer id, Integer newPriority );
 }

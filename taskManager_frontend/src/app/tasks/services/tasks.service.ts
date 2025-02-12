@@ -44,10 +44,21 @@ export class TasksService {
   }
 
   updateTask( id: number ): Observable<Task> {
-    return this.http.put<Task>(`${this.appUrl}/${id}`, {})
+    return this.http.put<Task>( `${ this.appUrl }/${ id }`, {})
       .pipe(
         catchError( error => throwError(() => new Error( 'Failed to update task' ))),
       );
+  }
+
+  updateTaskPriority ( id: number, newPriority: number ): Observable<void> {
+    return this.http.patch<void>( `${ this.appUrl }/${ id }/priority`, null, {
+      params: { newPriority: newPriority }
+    }).pipe(
+      catchError(( error ) => {
+        console.error( 'Error updating task priority:', error );
+        throw error;
+      })
+    );
   }
 
 }

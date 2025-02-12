@@ -2,6 +2,9 @@ package com.example.taskManager.service;
 
 import com.example.taskManager.model.Task;
 import com.example.taskManager.repository.TaskRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,10 @@ public class TaskService implements ITaskService{
 
     @Override
     public Task createTask( Task task ) {
+        if ( task.getPriority() == null ) {
+            Integer maxPriority = taskRepository.findMaxPriority().orElse(0);
+            task.setPriority( maxPriority + 1 );
+        }
        return taskRepository.save( task );
     }
 
@@ -48,13 +55,42 @@ public class TaskService implements ITaskService{
     public Task updateTaskStatus( Integer id ) {
         Task task = taskRepository.findById( id )
             .orElseThrow(() -> new IllegalArgumentException( "Task not found with ID: " + id ));
-        task.setCompleted( !task.getCompleted() );
+
+        boolean wasCompleted = task.getCompleted();
+        task.setCompleted( !wasCompleted );
+
+        if ( !wasCompleted ) {
+            task.setPriority( 0 );
+        } else {
+            Integer highestPriority = taskRepository.findMaxPriority()
+                .orElse(0);
+            task.setPriority( highestPriority + 1 );
+        }
+
         return taskRepository.save( task );
     }
+
 
     @Override
     public void deleteTaskById( Integer id ) {
         taskRepository.deleteById( id );
     }
     
+    @Transactional
+    public void updatePriority( Integer id, Integer newPriority ) {
+        Task task = taskRepository.findById( id )
+            .orElseThrow(() -> new IllegalArgumentException( "Task not found with ID: " + id ));
+
+        Integer oldPriority = task.getPriority();
+
+        if ( newPriority > oldPriority ) {
+            taskRepository.updatePrioritiesDown( oldPriority + 1, newPriority );
+        }
+        else if ( newPriority < oldPriority ) {
+            taskRepository.updatePrioritiesUp( newPriority, oldPriority - 1 );
+        }
+
+        task.setPriority( newPriority );
+        taskRepository.save( task );
+    }
 }

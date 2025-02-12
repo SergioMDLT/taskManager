@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Task } from '../../models/task';
 import { TasksService } from '../../services/tasks.service';
 import { ToastService } from '../../services/toast.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'tasks-table',
@@ -13,6 +14,9 @@ export class TasksTableComponent {
 
   @Input()
   public tasks: Task[] = [];
+
+  @Input()
+  showPriority: boolean = false;
 
   constructor (
       private readonly taskService: TasksService,
@@ -50,6 +54,24 @@ export class TasksTableComponent {
         }
       });
     }
+  }
+
+  onDrop( event: CdkDragDrop<Task[]> ): void {
+    moveItemInArray( this.tasks, event.previousIndex, event.currentIndex );
+
+    const updatedTask = this.tasks[ event.currentIndex ];
+    const newPriority = event.currentIndex + 1;
+
+    this.taskService.updateTaskPriority( updatedTask.id, newPriority )
+    .subscribe({
+      next: () => {
+        console.log( `Priority updated for task ${ updatedTask.id } to ${ newPriority }`);
+      },
+      error: (err) => {
+        console.error( 'Failed to update priority:', err );
+        moveItemInArray( this.tasks, event.currentIndex, event.previousIndex );
+      },
+    });
   }
 
 }

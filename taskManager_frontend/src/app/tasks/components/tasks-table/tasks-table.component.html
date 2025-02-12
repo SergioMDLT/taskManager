@@ -14,9 +14,9 @@
         <th style="width: 8%;"></th>
       </tr>
     </thead>
-    <tbody>
-      <tr *ngFor="let task of tasks; let i=index">
-        <td>{{ i + 1 }}</td>
+    <tbody cdkDropList (cdkDropListDropped)="onDrop( $event )">
+      <tr *ngFor="let task of tasks let index = index" cdkDrag>
+        <td>{{ showPriority ? task.priority : index }}</td>
         <td>{{ task.title }}</td>
         <td>{{ task.description }}</td>
         <td>
@@ -38,5 +38,4 @@
       </tr>
     </tbody>
   </table>
-
 </ng-template>

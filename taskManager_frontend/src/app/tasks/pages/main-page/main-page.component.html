@@ -15,7 +15,10 @@
 <div class="row">
   <div class="col">
 
-    <tasks-table [tasks]="tasks"></tasks-table>
+    <tasks-table
+      [tasks]="tasks"
+      [showPriority]="true">
+    </tasks-table>
 
     <div *ngIf="isLoading">
       <shared-spinner></shared-spinner>

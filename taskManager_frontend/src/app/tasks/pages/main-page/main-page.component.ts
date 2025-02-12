@@ -15,7 +15,7 @@ export class MainPageComponent implements OnInit {
   public isLoading: boolean = false;
   public searchTerm: string = '';
   public totalPages: number = 0;
-  public sortField: string = 'id';
+  public sortField: string = 'priority';
 
   private readonly searchKey = 'main-search-term';
   private readonly tasksKey = 'main-tasks';
