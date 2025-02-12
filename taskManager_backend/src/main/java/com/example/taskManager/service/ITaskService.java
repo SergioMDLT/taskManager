@@ -1,14 +1,15 @@
 package com.example.taskManager.service;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.example.taskManager.model.Task;
 
 public interface ITaskService {
-    public List<Task> getAllTasks();
+    public Page<Task> getAllTasks( Pageable pageable );
     public Task getTaskById( Integer id );
-    public List<Task> getTaskByTitle( String title );
-    public List<Task> getByCompleted( Boolean completed );
+    public Page<Task> getTasksByTitle( String title, Pageable pageable );
+    public Page<Task> getTasksByCompleted( Boolean completed, Pageable pageable );
+    public Page<Task> getTasksByCompletedAndTitle( Boolean completed, String title, Pageable pageable );
     public Task createTask( Task task );
     public Task updateTaskStatus ( Integer id );
     public void deleteTaskById( Integer id );

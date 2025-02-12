@@ -2,28 +2,24 @@
 <hr>
 
 <div class="row">
-
   <div class="col">
     <shared-searchbox
     [searchTerm]="searchTerm"
     (onDebounce)="onSearch( $event )">
     </shared-searchbox>
-
   </div>
+</div>
 
-  <div class="row">
-    <div class="col">
-      <hr>
+<hr>
 
-      <div *ngIf="isLoading">
-        <shared-spinner></shared-spinner>
-      </div>
+<div class="row">
+  <div class="col">
 
-      <div *ngIf="!isLoading">
-        <tasks-table [tasks]="tasks"></tasks-table>
-      </div>
+    <tasks-table [tasks]="tasks"></tasks-table>
+
+    <div *ngIf="isLoading">
+      <shared-spinner></shared-spinner>
+    </div>
 
     </div>
-  </div>
-
 </div>

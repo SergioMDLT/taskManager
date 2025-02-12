@@ -2,6 +2,11 @@ package com.example.taskManager.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.example.taskManager.model.Task;
 import com.example.taskManager.service.TaskService;
 
@@ -27,21 +31,35 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<Task> getTasks(
+    public Page<Task> getTasks(
         @RequestParam( required = false ) Integer id,
         @RequestParam( required = false ) String title,
-        @RequestParam( required = false ) Boolean completed
+        @RequestParam( required = false ) Boolean completed,
+        @RequestParam( defaultValue = "0") int page,
+        @RequestParam( defaultValue = "10") int size,
+        @RequestParam( defaultValue = "id") String sort
     ) {
+        List<String> validSortFields = List.of("id", "title", "description", "completed");
+        String validatedSort = validSortFields.contains( sort ) ? sort : "id";
+        Pageable pageable = PageRequest.of( page, size, Sort.by( validatedSort ));
+        
         if ( id != null ) {
-            return List.of( taskService.getTaskById( id ) );
+            Task task = taskService.getTaskById( id );
+            if ( task == null ) {
+                return Page.empty(pageable);
+            }
+            return new PageImpl<>( List.of( task ), pageable, 1);
+        }
+        if ( completed != null && title != null ) {
+            return taskService.getTasksByCompletedAndTitle( completed, title, pageable );
         }
         if ( title != null ) {
-            return taskService.getTaskByTitle( title );
+            return taskService.getTasksByTitle( title, pageable );
         }
         if ( completed != null ) {
-            return completed ? taskService.getByCompleted( true ) : taskService.getByCompleted( false );
+            return taskService.getTasksByCompleted( completed, pageable );
         }
-        return taskService.getAllTasks();
+        return taskService.getAllTasks( pageable );
     }
 
     @PostMapping

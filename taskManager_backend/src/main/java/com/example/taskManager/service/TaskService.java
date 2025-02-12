@@ -2,8 +2,8 @@ package com.example.taskManager.service;
 
 import com.example.taskManager.model.Task;
 import com.example.taskManager.repository.TaskRepository;
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,8 +15,8 @@ public class TaskService implements ITaskService{
     }
     
     @Override
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+    public Page<Task> getAllTasks( Pageable pageable ) {
+        return taskRepository.findAll( pageable );
     }
 
     @Override
@@ -25,13 +25,18 @@ public class TaskService implements ITaskService{
     }
 
     @Override
-    public List<Task> getTaskByTitle( String title ) {
-        return taskRepository.findByTitleContainingIgnoreCase( title );
+    public Page<Task> getTasksByTitle( String title, Pageable pageable ) {
+        return taskRepository.findByTitleContainingIgnoreCase( title, pageable );
     }
 
     @Override
-    public List<Task> getByCompleted( Boolean completed ) {
-        return taskRepository.findByCompleted( completed );
+    public Page<Task> getTasksByCompleted( Boolean completed, Pageable pageable ) {
+        return taskRepository.findByCompleted( completed, pageable );
+    }
+
+    @Override
+    public Page<Task> getTasksByCompletedAndTitle( Boolean completed, String title, Pageable pageable ) {
+        return taskRepository.findByCompletedAndTitleContainingIgnoreCase( completed, title, pageable );
     }
 
     @Override
@@ -42,8 +47,8 @@ public class TaskService implements ITaskService{
     @Override
     public Task updateTaskStatus( Integer id ) {
         Task task = taskRepository.findById( id )
-            .orElseThrow(() -> new IllegalArgumentException("Task not found with ID: " + id));
-        task.setCompleted(!task.getCompleted());
+            .orElseThrow(() -> new IllegalArgumentException( "Task not found with ID: " + id ));
+        task.setCompleted( !task.getCompleted() );
         return taskRepository.save( task );
     }
 

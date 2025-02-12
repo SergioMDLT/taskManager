@@ -10,11 +10,15 @@ export class TasksService {
 
   constructor( private readonly http: HttpClient ) { }
 
-  getTasks( params?: { completed?: boolean; id?: number; title?: string } ): Observable<Task[]> {
-    return this.http.get<Task[]>( this.appUrl, { params } ).pipe(
+  getTasks( params?: { completed?: boolean; id?: number; title?: string, page?: number; size?: number; sort?: string } ): Observable<any> {
+    return this.http.get<any>( this.appUrl, { params } ).pipe(
       catchError(( error ) => {
         console.error( 'Error fetching tasks:', error );
-        return of([]);
+        return of({
+          content: [],
+          totalPages: 0,
+          totalElements: 0
+        });
       }),
     );
   }
@@ -45,6 +49,5 @@ export class TasksService {
         catchError( error => throwError(() => new Error( 'Failed to update task' ))),
       );
   }
-
 
 }

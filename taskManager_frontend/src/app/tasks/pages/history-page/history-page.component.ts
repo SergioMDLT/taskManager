@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Task } from '../../models/task';
 import { TasksService } from '../../services/tasks.service';
 import { ToastService } from '../../services/toast.service';
@@ -14,9 +14,13 @@ export class HistoryPageComponent implements OnInit {
   public tasks: Task[] = [];
   public isLoading: boolean = false;
   public searchTerm: string = '';
+  public totalPages: number = 0;
+  public sortField: string = 'id';
 
   private readonly searchKey = 'history-search-term';
   private readonly tasksKey = 'history-tasks';
+  private readonly pageSize: number = 15;
+  private currentPage: number = 0;
 
   constructor (
       private readonly taskService: TasksService,
@@ -53,11 +57,19 @@ export class HistoryPageComponent implements OnInit {
   }
 
   loadTasks(): void {
+    if ( this.currentPage >= this.totalPages && this.totalPages !== 0 ) return;
     this.isLoading = true;
-    this.taskService.getTasks().subscribe({
+
+    this.taskService.getTasks({
+      page: this.currentPage,
+      size: this.pageSize,
+      sort: this.sortField
+    }).subscribe({
       next: ( tasks ) => {
         setTimeout(() => {
-          this.tasks = tasks;
+          this.tasks = [ ...this.tasks, ...tasks.content ];
+          this.currentPage++;
+          this.totalPages = tasks.totalPages;
           this.saveTasksToStorage();
           this.isLoading = false;
         }, 500);
@@ -73,6 +85,8 @@ export class HistoryPageComponent implements OnInit {
 
   onSearch( term: string ): void {
     this.searchTerm = term;
+    this.currentPage = 0;
+    this.tasks = [];
 
     if ( term.trim().length === 0 ){
       localStorage.removeItem( this.searchKey );
@@ -84,10 +98,17 @@ export class HistoryPageComponent implements OnInit {
     localStorage.setItem( this.searchKey, term );
     this.isLoading = true;
 
-    this.taskService.getTasks({ title: term }).subscribe({
+    this.taskService.getTasks({
+      title: term,
+      page: this.currentPage,
+      size: this.pageSize,
+      sort: this.sortField
+    }).subscribe({
       next: ( tasks ) => {
         setTimeout(() => {
-          this.tasks = tasks;
+          this.tasks = tasks.content;
+          this.currentPage++;
+          this.totalPages = tasks.totalPages;
           this.saveTasksToStorage();
           this.isLoading = false;
         }, 500);
@@ -104,6 +125,15 @@ export class HistoryPageComponent implements OnInit {
     if ( this.isLocalStorageAvailable() ) {
       localStorage.setItem( this.tasksKey, JSON.stringify( this.tasks ) );
     }
+  }
+
+  @HostListener( 'window:scroll', [])
+  onScroll(): void {
+    const threshold = 50;
+    const position = window.innerHeight + window.scrollY;
+    const height = document.body.offsetHeight;
+
+    if ( position >= height - threshold && !this.isLoading ) this.loadTasks();
   }
 
 }
