@@ -1,5 +1,4 @@
-<div *ngIf="tasks.length === 0; else table"
-  class="alert alert-warning text-center">
+<div *ngIf="tasks.length === 0; else table" class="alert alert-warning text-center">
   No tasks to display
 </div>
 
@@ -9,33 +8,36 @@
       <tr>
         <th style="width: 4%;">#</th>
         <th style="width: 25%;">Task</th>
-        <th style="width: 55%;">Description</th>
+        <th style="width: 50%;">Description</th>
         <th style="width: 8%;">Status</th>
         <th style="width: 8%;"></th>
+        <th style="width: 5%;"></th>
       </tr>
     </thead>
-    <tbody cdkDropList (cdkDropListDropped)="onDrop( $event )">
-      <tr *ngFor="let task of tasks let index = index" cdkDrag>
+    <tbody cdkDropList (cdkDropListDropped)="onDrop($event)" [cdkDropListData]="tasks">
+      <tr *ngFor="let task of tasks let index = index" cdkDrag [cdkDragRootElement]="'tr'" [cdkDragData]="task">
         <td>{{ showPriority ? task.priority : index }}</td>
         <td>{{ task.title }}</td>
         <td>{{ task.description }}</td>
         <td>
-          <i *ngIf="!task.completed" class="fas fa-times text-green-500">To do</i>
-          <i *ngIf="task.completed" class="fas fa-check text-red-500">Completed</i>
+          <i *ngIf="!task.completed" class="fas fa-hourglass text-blue-500 text-sm mr-1" title="Task pending"></i>
+          <span *ngIf="!task.completed" class="text-blue-600 font-semibold">Pending</span>
+          <i *ngIf="task.completed" class="fas fa-trophy text-yellow-500 text-sm mr-1" title="Task completed"></i>
+          <span *ngIf="task.completed" class="text-yellow-700 font-semibold">Achieved</span>
         </td>
         <td>
-          <button
-          mat-button color="warn"
-          (click)="onUpdateTask( task.id )">
+          <button mat-button color="warn" (click)="onUpdateTask(task.id)">
             <mat-icon>update</mat-icon>
           </button>
-          <button
-          mat-button color="warn"
-          (click)="onDeleteTask( task.id )">
+          <button mat-button color="warn" (click)="onDeleteTask(task.id)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
+        <td cdkDragHandle>
+          <i class="fas fa-grip-lines"></i>
+        </td>
       </tr>
     </tbody>
+
   </table>
 </ng-template>

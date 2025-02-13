@@ -1,4 +1,68 @@
+table {
+  position: relative;
+  overflow: hidden;
+  table-layout: fixed;
+}
 
 button {
   margin-right: 2px;
+}
+
+td[cdkDragHandle] {
+  cursor: grab;
+  text-align: center;
+}
+
+td[cdkDragHandle]:active {
+  cursor: grabbing;
+}
+
+.cdk-drop-list {
+  transition: transform 0.2s ease;
+}
+
+.cdk-drag-animating {
+  transition: transform 0.2s ease;
+}
+
+.fas {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.fas.fa-grip-lines {
+  font-size: 1.5rem;
+  color: #6c757d;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.mr-1 {
+  margin-right: 0.25rem;
+}
+
+.text-blue-500 {
+  color: #4299e1;
+}
+
+.text-blue-600 {
+  color: #3182ce;
+}
+
+.text-yellow-500 {
+  color: #ecc94b;
+}
+
+.text-yellow-700 {
+  color: #b7791f;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+span {
+  vertical-align: middle;
 }

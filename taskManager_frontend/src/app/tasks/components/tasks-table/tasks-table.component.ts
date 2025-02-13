@@ -3,6 +3,7 @@ import { Task } from '../../models/task';
 import { TasksService } from '../../services/tasks.service';
 import { ToastService } from '../../services/toast.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'tasks-table',
@@ -56,20 +57,30 @@ export class TasksTableComponent {
     }
   }
 
-  onDrop( event: CdkDragDrop<Task[]> ): void {
+  onDrop(event: CdkDragDrop<Task[]>): void {
     moveItemInArray( this.tasks, event.previousIndex, event.currentIndex );
 
-    const updatedTask = this.tasks[ event.currentIndex ];
-    const newPriority = event.currentIndex + 1;
+    const updatedTasks = this.tasks.map(( task, index ) => ({
+      ...task,
+      priority: index + 1,
+    }));
 
-    this.taskService.updateTaskPriority( updatedTask.id, newPriority )
-    .subscribe({
+    const updateRequests = updatedTasks.map(( task ) =>
+      this.taskService.updateTaskPriority( task.id, task.priority )
+    );
+
+    forkJoin( updateRequests ).subscribe({
       next: () => {
-        console.log( `Priority updated for task ${ updatedTask.id } to ${ newPriority }`);
+        console.log('All priorities updated successfully');
+        this.tasks = updatedTasks;
       },
-      error: (err) => {
-        console.error( 'Failed to update priority:', err );
+      error: ( err ) => {
+        console.error( 'Failed to update priorities:', err );
         moveItemInArray( this.tasks, event.currentIndex, event.previousIndex );
+        this.tasks = this.tasks.map(( task, index ) => ({
+          ...task,
+          priority: index + 1,
+        }));
       },
     });
   }
