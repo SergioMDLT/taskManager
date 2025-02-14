@@ -60,7 +60,7 @@ public class TaskService implements ITaskService{
         task.setCompleted( !wasCompleted );
 
         if ( !wasCompleted ) {
-            task.setPriority( 0 );
+            task.setPriority( null );
         } else {
             Integer highestPriority = taskRepository.findMaxPriority()
                 .orElse(0);

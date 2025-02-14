@@ -28,6 +28,6 @@ public class Task {
     String description;
     @Column( name = "completed" )
     Boolean completed;
-    @Column( name = "priority", unique = true, nullable = false )
+    @Column( name = "priority", unique = true, nullable = true )
     Integer priority = 0;
 }
