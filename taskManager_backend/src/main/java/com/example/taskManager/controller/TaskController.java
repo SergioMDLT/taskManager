@@ -1,12 +1,6 @@
 package com.example.taskManager.controller;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,21 +13,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.taskManager.model.Task;
-import com.example.taskManager.service.TaskService;
+import com.example.taskManager.dto.TaskRequestDTO;
+import com.example.taskManager.dto.TaskResponseDTO;
+import com.example.taskManager.service.command.ITaskCommandService;
+import com.example.taskManager.service.query.ITaskQueryService;
 
 @RestController
 @RequestMapping( "/tasks" )
 @CrossOrigin( value = "http://localhost:4200" )
 public class TaskController {
     
-    private TaskService taskService;
-    public TaskController( TaskService taskService ){
-        this.taskService = taskService;
+    private final ITaskQueryService taskQueryService;
+    private final ITaskCommandService taskCommandService;
+
+    public TaskController( ITaskQueryService taskQueryService, ITaskCommandService taskCommandService ){
+        this.taskQueryService = taskQueryService;
+        this.taskCommandService = taskCommandService;
     }
 
     @GetMapping
-    public Page<Task> getTasks(
+    public ResponseEntity<Page<TaskResponseDTO>> getTasks(
         @RequestParam( required = false ) Integer id,
         @RequestParam( required = false ) String title,
         @RequestParam( required = false ) Boolean completed,
@@ -41,50 +40,35 @@ public class TaskController {
         @RequestParam( defaultValue = "10") int size,
         @RequestParam( defaultValue = "id") String sort
     ) {
-        List<String> validSortFields = List.of("id", "title", "description", "completed");
-        String validatedSort = validSortFields.contains( sort ) ? sort : "id";
-        Pageable pageable = PageRequest.of( page, size, Sort.by( validatedSort ));
-        
-        if ( id != null ) {
-            Task task = taskService.getTaskById( id );
-            if ( task == null ) {
-                return Page.empty(pageable);
-            }
-            return new PageImpl<>( List.of( task ), pageable, 1);
-        }
-        if ( completed != null && title != null ) {
-            return taskService.getTasksByCompletedAndTitle( completed, title, PageRequest.of( page, size, Sort.by(Sort.Direction.ASC, "priority" )));
-        }
-        if ( title != null ) {
-            return taskService.getTasksByTitle( title, PageRequest.of( page, size, Sort.by(Sort.Direction.ASC, "priority" )));
-        }
-        if ( completed != null ) {
-            return taskService.getTasksByCompleted( completed, PageRequest.of( page, size, Sort.by(Sort.Direction.ASC, "priority" )) );
-        }
-        return taskService.getAllTasks( PageRequest.of( page, size, Sort.by(Sort.Direction.ASC, "priority" )) );
+        Page<TaskResponseDTO> tasks = taskQueryService.getTasks( id, title, completed, page, size, sort );
+        return ResponseEntity.ok( tasks );
     }
 
     @PostMapping
-    public Task createTask( @RequestBody Task task ){
-        return taskService.createTask( task );
+    public ResponseEntity<TaskResponseDTO> createTask( @RequestBody TaskRequestDTO taskRequestDTO ){
+        TaskResponseDTO createdTask = taskCommandService.createTask( taskRequestDTO );
+        return ResponseEntity.ok(createdTask);
     }
 
     @PutMapping( "/{id}" )
-    public Task updateTask( @PathVariable Integer id ){
-        return taskService.updateTaskStatus( id );
+    public ResponseEntity<TaskResponseDTO> updateTask( @PathVariable Integer id ){
+        TaskResponseDTO updatedTask = taskCommandService.updateTaskStatus( id );
+        return ResponseEntity.ok( updatedTask );
     }
 
-    @PatchMapping( "/{id}/priority" )
+    @PatchMapping("/{id}/priority")
     public ResponseEntity<Void> updateTaskPriority(
         @PathVariable Integer id,
         @RequestParam Integer newPriority
     ) {
-        taskService.updatePriority( id, newPriority );
+        taskCommandService.updatePriority( id, newPriority );
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping( "/{id}" )
-    public void deleteTask( @PathVariable Integer id ) {
-        taskService.deleteTaskById( id );
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTask( @PathVariable Integer id ) {
+        taskCommandService.deleteTaskById( id );
+        return ResponseEntity.noContent().build();
     }
 }
