@@ -12,7 +12,7 @@ services:
       MYSQL_PASSWORD: admin
     volumes:
       - db_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     ports:
       - "3306:3306"
 
@@ -26,6 +26,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: admin
     depends_on:
       - db
+    volumes:
+      - backend_data:/app/data
     ports:
       - "8080:8080"
 
@@ -39,6 +41,10 @@ services:
       - backend
     environment:
       - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - frontend_cache:/app/.cache
 
 volumes:
   db_data:
+  backend_data:
+  frontend_cache:
