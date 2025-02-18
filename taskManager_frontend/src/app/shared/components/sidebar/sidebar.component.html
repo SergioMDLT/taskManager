@@ -18,5 +18,14 @@
     class="list-group-item">
     Task history
   </li>
+  <li
+  class="list-group-item">
+    <div *ngIf="(auth.isAuthenticated$() | async); else loggedOut">
+      <button (click)="auth.logout()">Logout</button>
+    </div>
+    <ng-template #loggedOut>
+      <button (click)="auth.login()">Login</button>
+    </ng-template>
+  </li>
 
 </ul>

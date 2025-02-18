@@ -6,9 +6,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SharedModule } from './shared/shared.module';
 import { TasksModule } from './tasks/tasks.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthModule } from '@auth0/auth0-angular';
+import { authConfig } from './auth.config';
+import { AuthInterceptor } from './services/auth.interceptor';
+import { authClientProvider } from './services/auth.provider';
 
 @NgModule({
   declarations: [
@@ -16,16 +20,19 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   ],
   imports: [
     AppRoutingModule,
+    AuthModule.forRoot( authConfig ),
     BrowserModule,
     DragDropModule,
     HttpClientModule,
     MatSnackBarModule,
     SharedModule,
-    TasksModule
+    TasksModule,
   ],
   providers: [
     provideClientHydration(withEventReplay()),
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    authClientProvider,
   ],
   bootstrap: [AppComponent]
 })

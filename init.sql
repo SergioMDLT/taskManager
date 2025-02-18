@@ -1,5 +1,5 @@
 -- Inserción de registros iniciales en la tabla `task`
-INSERT INTO task (completed, description, title, priority) VALUES
+INSERT INTO tasks (completed, description, title, priority) VALUES
 (1, 'Actualizar la documentacion del proyecto.', 'Actualizar documentacion', NULL),
 (1, 'Preparar la presentacion para la reunion de equipo.', 'Preparar presentacion', NULL),
 (1, 'Realizar copia de seguridad de la base de datos.', 'Backup de base de datos', NULL),
