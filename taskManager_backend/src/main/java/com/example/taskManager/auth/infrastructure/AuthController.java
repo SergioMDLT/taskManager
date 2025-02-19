@@ -1,4 +1,4 @@
-package com.example.taskManager.auth.presentation;
+package com.example.taskManager.auth.infrastructure;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

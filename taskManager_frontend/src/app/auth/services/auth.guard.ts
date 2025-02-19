@@ -1,14 +1,15 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CanActivate, Router } from '@angular/router';
-import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
+
   private readonly isBrowser: boolean;
 
   constructor(
@@ -20,12 +21,16 @@ export class AuthGuard implements CanActivate {
   }
 
   canActivate(): Observable<boolean> {
-    return this.auth.isAuthenticated$().pipe(
-      tap( isAuthenticated => {
+    return this.auth.isAuthenticated$.pipe(
+      map( isAuthenticated => {
         if ( !isAuthenticated && this.isBrowser ) {
+          console.log( "Usuario no autenticado. Redirigiendo a Auth0..." );
           this.auth.login();
+          return false;
         }
+        return true;
       })
     );
   }
+
 }

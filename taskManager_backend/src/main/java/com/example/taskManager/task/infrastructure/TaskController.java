@@ -1,4 +1,4 @@
-package com.example.taskManager.task.presentation;
+package com.example.taskManager.task.infrastructure;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.example.taskManager.auth.application.AuthService;
 import com.example.taskManager.task.application.command.ITaskCommandService;
 import com.example.taskManager.task.application.dto.TaskRequestDTO;
 import com.example.taskManager.task.application.dto.TaskResponseDTO;
@@ -26,10 +26,12 @@ public class TaskController {
     
     private final ITaskQueryService taskQueryService;
     private final ITaskCommandService taskCommandService;
+    private final AuthService authService;
 
-    public TaskController( ITaskQueryService taskQueryService, ITaskCommandService taskCommandService ){
+    public TaskController( ITaskQueryService taskQueryService, ITaskCommandService taskCommandService, AuthService authService ){
         this.taskQueryService = taskQueryService;
         this.taskCommandService = taskCommandService;
+        this.authService = authService;
     }
 
     @GetMapping
@@ -41,14 +43,19 @@ public class TaskController {
         @RequestParam( defaultValue = "10") int size,
         @RequestParam( defaultValue = "id") String sort
     ) {
-        Page<TaskResponseDTO> tasks = taskQueryService.getTasks( id, title, completed, page, size, sort );
+        Integer userId = authService.getAuthenticatedUser().getUserId();
+        Page<TaskResponseDTO> tasks = taskQueryService.getTasks( id, userId, title, completed, page, size, sort );
         return ResponseEntity.ok( tasks );
+
+        //TO DO: que los admins puedan ver todas las tareas de la BD
     }
 
     @PostMapping
     public ResponseEntity<TaskResponseDTO> createTask( @RequestBody TaskRequestDTO taskRequestDTO ){
+        Integer userId = authService.getAuthenticatedUser().getUserId();
+        taskRequestDTO.setUserId( userId );
         TaskResponseDTO createdTask = taskCommandService.createTask( taskRequestDTO );
-        return ResponseEntity.ok(createdTask);
+        return ResponseEntity.ok( createdTask );
     }
 
     @PutMapping( "/{id}" )
@@ -57,7 +64,7 @@ public class TaskController {
         return ResponseEntity.ok( updatedTask );
     }
 
-    @PatchMapping("/{id}/priority")
+    @PatchMapping( "/{id}/priority" )
     public ResponseEntity<Void> updateTaskPriority(
         @PathVariable Integer id,
         @RequestParam Integer newPriority
@@ -67,9 +74,10 @@ public class TaskController {
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping( "/{id}" )
     public ResponseEntity<Void> deleteTask( @PathVariable Integer id ) {
         taskCommandService.deleteTaskById( id );
         return ResponseEntity.noContent().build();
     }
+
 }

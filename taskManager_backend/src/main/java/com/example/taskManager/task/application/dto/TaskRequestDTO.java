@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskRequestDTO {
+    private Integer  userId;
     private String   title;
     private String   description;
     private Boolean  completed;
     private Integer  priority;
 }
-

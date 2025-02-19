@@ -20,7 +20,7 @@
   </li>
   <li
   class="list-group-item">
-    <div *ngIf="(auth.isAuthenticated$() | async); else loggedOut">
+    <div *ngIf="( auth.isAuthenticated$ | async ); else loggedOut">
       <button (click)="auth.logout()">Logout</button>
     </div>
     <ng-template #loggedOut>

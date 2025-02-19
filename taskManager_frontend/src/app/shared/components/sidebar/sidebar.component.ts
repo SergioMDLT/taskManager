@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../../auth/services/auth.service';
+
 
 @Component({
   selector: 'shared-sidebar',

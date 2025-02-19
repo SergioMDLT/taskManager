@@ -1,10 +1,13 @@
 package com.example.taskManager.auth.application;
 
+import java.util.List;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-
-import com.example.taskManager.auth.domain.User;
-import com.example.taskManager.auth.domain.UserRepository;
+import com.example.taskManager.auth.application.dto.AuthenticatedUserDTO;
+import com.example.taskManager.user.domain.User;
+import com.example.taskManager.user.domain.UserRepository;
 
 @Service
 public class AuthService {
@@ -28,5 +31,27 @@ public class AuthService {
             return userRepository.save( newUser );
         });        
     }
+
+    public AuthenticatedUserDTO getAuthenticatedUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    
+        if ( principal instanceof Jwt jwt ) {
+            String auth0Id = jwt.getClaimAsString( "sub" );
+    
+            Integer userId = userRepository.findByAuth0Id( auth0Id )
+                .map( User::getId )
+                .orElseThrow(() -> new IllegalStateException( "User not found in database" ));
+    
+            List<String> roles = jwt.getClaimAsStringList( "https://your-app.com/roles" );
+            // TO DO: configurar la petición de los roles a auth0
+            
+            String role = roles != null && !roles.isEmpty() ? roles.get( 0 ) : "user";
+    
+            return new AuthenticatedUserDTO( auth0Id, userId, role );
+        }
+    
+        throw new IllegalStateException("No authenticated user found");
+    }
+    
 
 }

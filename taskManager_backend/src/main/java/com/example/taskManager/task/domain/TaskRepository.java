@@ -12,21 +12,23 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Integer>{
 
-    Page<Task> findByTitleContainingIgnoreCase( String title, Pageable pageable );
+    Page<Task> findByUserId( Integer userId, Pageable pageable );
 
-    Page<Task> findByCompletedAndTitleContainingIgnoreCase( Boolean completed, String title, Pageable pageable );
+    Page<Task> findByUserIdAndCompleted( Integer userId, Boolean completed, Pageable pageable );
 
-    Page<Task> findByCompleted( Boolean completed, Pageable pageable );
+    Page<Task> findByUserIdAndTitleContainingIgnoreCase( Integer userId, String title, Pageable pageable );
 
-    @Query( "SELECT MAX(t.priority) FROM Task t" )
-    Optional<Integer> findMaxPriority();
+    Page<Task> findByUserIdAndCompletedAndTitleContainingIgnoreCase( Integer userId, Boolean completed, String title, Pageable pageable );
 
-    @Modifying
-    @Query( "UPDATE Task t SET t.priority = t.priority - 1 WHERE t.priority >= :start AND t.priority <= :end" )
-    void updatePrioritiesDown(@Param( "start" ) Integer start, @Param( "end" ) Integer end );
+    @Query( "SELECT MAX(t.priority) FROM Task t WHERE t.user.id = :userId" )
+    Optional<Integer> findMaxPriorityByUserId( @Param( "userId" ) Integer userId );
 
     @Modifying
-    @Query( "UPDATE Task t SET t.priority = t.priority + 1 WHERE t.priority >= :start AND t.priority <= :end" )
-    void updatePrioritiesUp(@Param( "start" ) Integer start, @Param( "end" ) Integer end );
+    @Query("UPDATE Task t SET t.priority = t.priority - 1 WHERE t.user.id = :userId AND t.priority BETWEEN :start AND :end" )
+    void updatePrioritiesDown( @Param( "userId" ) Integer userId, @Param( "start" ) Integer start, @Param( "end" ) Integer end) ;
+
+    @Modifying
+    @Query("UPDATE Task t SET t.priority = t.priority + 1 WHERE t.user.id = :userId AND t.priority BETWEEN :start AND :end" )
+    void updatePrioritiesUp( @Param( "userId" ) Integer userId, @Param( "start" ) Integer start, @Param( "end" ) Integer end );
 
 }
