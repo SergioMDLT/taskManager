@@ -20,12 +20,13 @@
   </li>
   <li
   class="list-group-item">
-    <div *ngIf="( auth.isAuthenticated$ | async ); else loggedOut">
-      <button (click)="auth.logout()">Logout</button>
-    </div>
-    <ng-template #loggedOut>
-      <button (click)="auth.login()">Login</button>
-    </ng-template>
+  <div *ngIf="auth.user$ | async as user; else loggedOut">
+    <p>Bienvenido, {{ user.name }}</p>
+    <button (click)="auth.logout()">Logout</button>
+  </div>
+  <ng-template #loggedOut>
+    <button (click)="auth.login()">Login</button>
+  </ng-template>
   </li>
 
 </ul>

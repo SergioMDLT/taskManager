@@ -1,17 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MainPageComponent } from './tasks/pages/main-page/main-page.component';
-import { AuthGuard } from './auth/services/auth.guard';
+import { TasksRoutingModule } from './tasks/tasks-routing.module';
 
-const routes: Routes = [
-  { path: '', redirectTo: 'tasks', pathMatch: 'full' },
-  { path: 'tasks', component: MainPageComponent, canActivate: [AuthGuard] },
-  { path: '**', redirectTo: 'tasks' }
-];
+const routes: Routes = [];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot( routes )
+    RouterModule.forRoot( routes ),
+    TasksRoutingModule
   ],
   exports: [
     RouterModule

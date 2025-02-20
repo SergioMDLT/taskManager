@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of, throwError } from 'rxjs';
+import { catchError, EMPTY, Observable, of, switchMap, throwError } from 'rxjs';
 import { Task } from '../models/task';
 import { environment } from '../../../environments/environment';
+import { ToastService } from './toast.service';
 
 
 @Injectable({ providedIn: 'root' })
@@ -10,12 +11,22 @@ export class TasksService {
 
   private readonly appUrl: string = environment.apiUrl;
 
-  constructor( private readonly http: HttpClient ) { }
+  constructor(
+    private readonly http: HttpClient,
+    private readonly toastService: ToastService
+  ) { }
 
   getTasks( params?: { completed?: boolean; id?: number; title?: string, page?: number; size?: number; sort?: string } ): Observable<any> {
     return this.http.get<any>( this.appUrl, { params } ).pipe(
+      switchMap(isAuthenticated => {
+        if (!isAuthenticated) {
+          this.toastService.showError("Usuario no autenticado. No se enviará la solicitud");
+          return EMPTY;
+        }
+        return this.http.get(this.appUrl);
+      }),
       catchError(( error ) => {
-        console.error( 'Error fetching tasks:', error );
+        this.toastService.showError( `Error fetching tasks: ${ error }` );
         return of({
           content: [],
           totalPages: 0,
@@ -57,7 +68,7 @@ export class TasksService {
       params: { newPriority: newPriority }
     }).pipe(
       catchError(( error ) => {
-        console.error( 'Error updating task priority:', error );
+        this.toastService.showError( `Error updating task priority: ${ error }` );
         throw error;
       })
     );
