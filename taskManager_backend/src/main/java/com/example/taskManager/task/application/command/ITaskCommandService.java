@@ -11,6 +11,6 @@ public interface ITaskCommandService {
 
     void updatePriority( Integer id, Integer newPriority );
 
-    void deleteTaskById( Integer id );
+    void deleteTask( Integer id, Integer userId );
     
 }

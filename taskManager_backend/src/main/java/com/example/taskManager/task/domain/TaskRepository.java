@@ -20,15 +20,27 @@ public interface TaskRepository extends JpaRepository<Task, Integer>{
 
     Page<Task> findByUserIdAndCompletedAndTitleContainingIgnoreCase( Integer userId, Boolean completed, String title, Pageable pageable );
 
+    @Query( "SELECT t FROM Task t WHERE t.user.id = :userId AND t.priority = :priority" )
+    Optional<Task> findByUserIdAndPriority( @Param( "userId ") Integer userId, @Param( "priority" ) Integer priority );
+
+    
     @Query( "SELECT MAX(t.priority) FROM Task t WHERE t.user.id = :userId" )
     Optional<Integer> findMaxPriorityByUserId( @Param( "userId" ) Integer userId );
 
     @Modifying
-    @Query("UPDATE Task t SET t.priority = t.priority - 1 WHERE t.user.id = :userId AND t.priority BETWEEN :start AND :end" )
-    void updatePrioritiesDown( @Param( "userId" ) Integer userId, @Param( "start" ) Integer start, @Param( "end" ) Integer end) ;
+    @Query("UPDATE Task t SET t.priority = t.priority - 1 WHERE t.user.id = :userId AND t.priority > :oldPriority AND t.priority <= :newPriority ")
+    void updatePrioritiesDown(
+        @Param("userId") Integer userId, 
+        @Param("oldPriority") Integer oldPriority, 
+        @Param("newPriority") Integer newPriority
+    );
 
     @Modifying
-    @Query("UPDATE Task t SET t.priority = t.priority + 1 WHERE t.user.id = :userId AND t.priority BETWEEN :start AND :end" )
-    void updatePrioritiesUp( @Param( "userId" ) Integer userId, @Param( "start" ) Integer start, @Param( "end" ) Integer end );
+    @Query("UPDATE Task t SET t.priority = t.priority + 1 WHERE t.user.id = :userId AND t.priority >= :newPriority AND t.priority < :oldPriority" )
+    void updatePrioritiesUp(
+        @Param("userId") Integer userId, 
+        @Param("newPriority") Integer newPriority, 
+        @Param("oldPriority") Integer oldPriority
+    );
 
 }

@@ -33,31 +33,40 @@ public class TaskQueryService implements ITaskQueryService {
         int size,
         String sort
     ) {
-        Pageable pageable = PageRequest.of( page, size, Sort.by( sort ));
-
-        if ( userId == null ) {
-            throw new IllegalArgumentException( "El userId es obligatorio para filtrar tareas por usuario" );
+        // Si se busca por completed, ordenar por priority DESC, si no, ordenar por el campo solicitado
+        Sort sorting = (completed != null) 
+            ? Sort.by(Sort.Direction.DESC, "priority") 
+            : Sort.by(Sort.Direction.ASC, sort);
+    
+        Pageable pageable = PageRequest.of(page, size, sorting);
+    
+        if (userId == null) {
+            throw new IllegalArgumentException("El userId es obligatorio para filtrar tareas por usuario");
         }
-        
-        if ( id != null ) {
-            Task task = taskRepository.findById( id )
-                .orElseThrow(() -> new TaskNotFoundException( "Task not found with ID: " + id ));
-            return new PageImpl<>( List.of(taskMapper.toDTO( task )), pageable, 1 );
+    
+        if (id != null) {
+            Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with ID: " + id));
+            return new PageImpl<>(List.of(taskMapper.toDTO(task)), pageable, 1);
         }
-
-        if ( completed != null && title != null ) {
-            return taskRepository.findByUserIdAndCompletedAndTitleContainingIgnoreCase( userId, completed, title, pageable )
+    
+        if (completed != null && title != null) {
+            return taskRepository.findByUserIdAndCompletedAndTitleContainingIgnoreCase(userId, completed, title, pageable)
                 .map(taskMapper::toDTO);
         }
-
-        if ( completed != null ) {
-            return taskRepository.findByUserIdAndCompleted( userId, completed, pageable ).map( taskMapper::toDTO );
+    
+        if (completed != null) {
+            return taskRepository.findByUserIdAndCompleted(userId, completed, pageable)
+                .map(taskMapper::toDTO);
         }
-
-        if ( title != null ) {
-            return taskRepository.findByUserIdAndTitleContainingIgnoreCase( userId, title, pageable ).map( taskMapper::toDTO );
+    
+        if (title != null) {
+            return taskRepository.findByUserIdAndTitleContainingIgnoreCase(userId, title, pageable)
+                .map(taskMapper::toDTO);
         }
-
-        return taskRepository.findAll( pageable ).map( taskMapper::toDTO );
+    
+        return taskRepository.findAll(pageable).map(taskMapper::toDTO);
     }
+
+
 }

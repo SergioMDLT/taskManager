@@ -2,6 +2,8 @@ package com.example.taskManager.task.infrastructure;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +38,7 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<Page<TaskResponseDTO>> getTasks(
+        @AuthenticationPrincipal Jwt jwt,
         @RequestParam( required = false ) Integer id,
         @RequestParam( required = false ) String title,
         @RequestParam( required = false ) Boolean completed,
@@ -43,7 +46,11 @@ public class TaskController {
         @RequestParam( defaultValue = "10") int size,
         @RequestParam( defaultValue = "id") String sort
     ) {
-        Integer userId = authService.getAuthenticatedUser().getUserId();
+        Integer userId = jwt.getClaim("sub");
+        if (userId == null) {
+            throw new IllegalArgumentException("El userId no se encontró en el token.");
+        }
+        
         Page<TaskResponseDTO> tasks = taskQueryService.getTasks( id, userId, title, completed, page, size, sort );
         return ResponseEntity.ok( tasks );
 
@@ -75,9 +82,11 @@ public class TaskController {
 
 
     @DeleteMapping( "/{id}" )
-    public ResponseEntity<Void> deleteTask( @PathVariable Integer id ) {
-        taskCommandService.deleteTaskById( id );
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteTask(@PathVariable Integer id) {
+        Integer userId = authService.getAuthenticatedUser().getUserId(); 
+        taskCommandService.deleteTask(id, userId);  // ✅ Verifica que pasas `userId`
+        return ResponseEntity.noContent().build();  // ✅ Devuelve 204 (sin contenido)
     }
+
 
 }

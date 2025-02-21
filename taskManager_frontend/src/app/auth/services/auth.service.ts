@@ -1,7 +1,8 @@
 import { inject, Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthService as Auth0Service, User } from '@auth0/auth0-angular';
-import { BehaviorSubject, from, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, from, map, Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -14,7 +15,7 @@ export class AuthService {
   private readonly isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  constructor( @Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient ) {
     this.isBrowser = isPlatformBrowser(platformId);
 
     if (this.isBrowser) {
@@ -27,11 +28,12 @@ export class AuthService {
 
       this.auth0.user$.subscribe(user => {
         this.userSubject.next(user ?? null);
+        if (user) this.registerUser(user);
       });
 
       this.auth0.getAccessTokenSilently().subscribe({
         next: (token) => {
-          console.log("Token recuperado:", token);
+          console.log("Token recuperado" );
         },
         error: (err) => {
           console.warn("No se pudo recuperar token automáticamente:", err);
@@ -43,20 +45,33 @@ export class AuthService {
     }
   }
 
+  private registerUser( user: User ): void {
+    const userDTO = {
+      auth0Id: user.sub,
+      email: user.email
+    };
+
+    this.http.post( 'http://localhost:8080/users/register', userDTO )
+      .subscribe({
+        next: ( response ) => console.log( "Usuario registrado en backend: ", response ),
+        error: ( err ) => console.warn( "Error al registrar usuario: ", err )
+      });
+  }
+
   login(): void {
-    if (!this.isBrowser || !this.auth0) {
-      console.warn("No se puede iniciar sesión en SSR");
+    if ( !this.isBrowser || !this.auth0 ) {
+      console.warn( "No se puede iniciar sesión en SSR" );
       return;
     }
 
     this.auth0.loginWithRedirect({
       authorizationParams: { redirect_uri: 'http://localhost:4200/callback' },
-      appState: { target: '/tasks' }
+      appState: { target: '/main' }
     });
   }
 
   logout(): void {
-    if (this.isBrowser && this.auth0) {
+    if ( this.isBrowser && this.auth0 ) {
       this.auth0.logout({
         logoutParams: { returnTo: 'http://localhost:4200' }
       });
@@ -64,10 +79,18 @@ export class AuthService {
   }
 
   getUser(): Observable<User | null> {
-    return this.isBrowser && this.auth0 ? this.auth0.user$.pipe(map(user => user ?? null)) : of(null);
+    return this.isBrowser && this.auth0 ? this.auth0.user$.pipe( map( user => user ?? null )) : of( null );
   }
 
   getToken(): Observable<string> {
-    return this.isBrowser && this.auth0 ? from(this.auth0.getAccessTokenSilently()) : of('');
+    return this.isBrowser && this.auth0
+      ? from(this.auth0.getAccessTokenSilently()).pipe(
+          catchError(error => {
+            console.error("❌ Error obteniendo el token:", error);
+            return of(''); // Devuelve un string vacío si hay error
+          })
+        )
+      : of('');
   }
+
 }
