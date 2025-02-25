@@ -1,7 +1,6 @@
 package com.example.taskManager.application.user;
 
 import org.springframework.stereotype.Service;
-
 import com.example.taskManager.domain.user.User;
 import com.example.taskManager.domain.user.UserRepository;
 

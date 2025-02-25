@@ -23,34 +23,34 @@ export class AuthGuard implements CanActivate {
 
   canActivate(): Observable<boolean> {
     if (!this.isBrowser) {
-      return of(false); // No redirigir en SSR
+      return of( false );
     }
 
     return this.auth.isAuthenticated$.pipe(
-      tap(isAuthenticated => {
-        if (!isAuthenticated) {
-          console.warn("Usuario NO autenticado, intentando recuperar sesión...");
+      tap( isAuthenticated => {
+        if ( !isAuthenticated ) {
+          console.warn( "User not authenticated, trying to find session..." );
 
-          // Intentamos recuperar la sesión primero
           this.auth.getToken().subscribe({
-            next: (token) => {
-              if (!token) {
-                console.warn("No se pudo recuperar sesión, redirigiendo a login...");
+            next: ( token ) => {
+              if ( !token ) {
+                console.warn("Session could not be found, redirecting to login...");
                 this.auth.login();
               }
             },
-            error: (err) => {
-              console.error("Error recuperando token:", err);
+            error: ( err ) => {
+              console.error( "Error reloading token:", err );
               this.auth.login();
             }
           });
         }
       }),
-      map(isAuthenticated => isAuthenticated),
-      catchError(error => {
-        console.error("Error verificando autenticación:", error);
-        return of(false);
+      map( isAuthenticated => isAuthenticated ),
+      catchError( error => {
+        console.error( "Error verifying authentication:", error );
+        return of( false );
       })
     );
   }
+
 }

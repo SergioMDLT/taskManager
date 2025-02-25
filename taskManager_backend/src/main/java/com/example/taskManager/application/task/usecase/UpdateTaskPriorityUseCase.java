@@ -14,7 +14,7 @@ public class UpdateTaskPriorityUseCase {
     private final TaskRepository taskRepository;
 
     public UpdateTaskPriorityUseCase( TaskRepository taskRepository ) {
-        this.taskRepository =   taskRepository;
+        this.taskRepository = taskRepository;
     }
     
     @Transactional

@@ -1,7 +1,6 @@
 package com.example.taskManager.domain.task;
 
 import com.example.taskManager.domain.user.User;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

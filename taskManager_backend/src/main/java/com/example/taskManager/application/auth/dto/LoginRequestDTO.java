@@ -1,13 +1,14 @@
 package com.example.taskManager.application.auth.dto;
 
 public class LoginRequestDTO {
+
     private String email;
     private String password;
 
     public LoginRequestDTO() {}
 
     public LoginRequestDTO( String email, String password ) {
-        this.email = email;
+        this.email =    email;
         this.password = password;
     }
 
@@ -16,4 +17,5 @@ public class LoginRequestDTO {
 
     public String getPassword() { return password; }
     public void setPassword( String password ) { this.password = password; }
+
 }

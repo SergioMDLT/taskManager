@@ -5,7 +5,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-
 import com.example.taskManager.application.auth.dto.AuthenticatedUserDTO;
 import com.example.taskManager.domain.user.User;
 import com.example.taskManager.domain.user.UserRepository;
@@ -53,6 +52,5 @@ public class AuthService {
     
         throw new IllegalStateException("No authenticated user found");
     }
-    
 
 }

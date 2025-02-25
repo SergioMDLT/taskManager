@@ -50,8 +50,8 @@ export class TasksTableComponent {
           this.tasks = this.tasks.filter((task) => task.id !== id);
         },
         error: (err) => {
-          console.error('Error deleting task: ', err);
-          this.toastService.showError( 'Error deleting task' );
+          console.error( "Error deleting task: ", err);
+          this.toastService.showError( "Error deleting task" );
         }
       });
     }
@@ -71,11 +71,11 @@ export class TasksTableComponent {
 
     forkJoin( updateRequests ).subscribe({
       next: () => {
-        console.log('All priorities updated successfully');
+        console.log( "All priorities updated successfully" );
         this.tasks = updatedTasks;
       },
       error: ( err ) => {
-        console.error( 'Failed to update priorities:', err );
+        console.error( "Failed to update priorities: ", err );
         moveItemInArray( this.tasks, event.currentIndex, event.previousIndex );
         this.tasks = this.tasks.map(( task, index ) => ({
           ...task,

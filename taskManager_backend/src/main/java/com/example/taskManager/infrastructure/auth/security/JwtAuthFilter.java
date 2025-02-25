@@ -10,7 +10,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,4 +47,5 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         filterChain.doFilter( request, response );
     }
+    
 }

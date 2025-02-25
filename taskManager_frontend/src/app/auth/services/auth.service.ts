@@ -9,39 +9,38 @@ export class AuthService {
   private readonly isBrowser: boolean;
   private readonly auth0?: Auth0Service;
 
-  private readonly userSubject = new BehaviorSubject<User | null>(null);
+  private readonly userSubject = new BehaviorSubject<User | null>( null );
   public user$ = this.userSubject.asObservable();
 
-  private readonly isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  private readonly isAuthenticatedSubject = new BehaviorSubject<boolean>( false );
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  constructor( @Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient ) {
-    this.isBrowser = isPlatformBrowser(platformId);
+  constructor( @Inject( PLATFORM_ID ) private readonly platformId: Object, private readonly http: HttpClient ) {
+    this.isBrowser = isPlatformBrowser( platformId );
 
-    if (this.isBrowser) {
-      // Inyectar Auth0Service solo en el navegador
-      this.auth0 = inject(Auth0Service);
+    if ( this.isBrowser ) {
+      this.auth0 = inject( Auth0Service );
 
-      this.auth0.isAuthenticated$.subscribe(isAuth => {
-        this.isAuthenticatedSubject.next(isAuth);
+      this.auth0.isAuthenticated$.subscribe( isAuth => {
+        this.isAuthenticatedSubject.next( isAuth );
       });
 
-      this.auth0.user$.subscribe(user => {
-        this.userSubject.next(user ?? null);
-        if (user) this.registerUser(user);
+      this.auth0.user$.subscribe( user => {
+        this.userSubject.next( user ?? null );
+        if ( user ) this.registerUser( user );
       });
 
       this.auth0.getAccessTokenSilently().subscribe({
-        next: (token) => {
-          console.log("Token recuperado" );
+        next: ( token ) => {
+          console.log( "Token reloaded" );
         },
         error: (err) => {
-          console.warn("No se pudo recuperar token automáticamente:", err);
+          console.warn( "Could not reload token automatically: ", err );
         }
       });
 
     } else {
-      console.warn('Auth0Service no se ejecuta en SSR.');
+      console.warn( 'Auth0Service is not executed on SSR' );
     }
   }
 
@@ -53,14 +52,14 @@ export class AuthService {
 
     this.http.post( 'http://localhost:8080/users/register', userDTO )
       .subscribe({
-        next: ( response ) => console.log( "Usuario registrado en backend: ", response ),
-        error: ( err ) => console.warn( "Error al registrar usuario: ", err )
+        next: ( response ) => console.log( "User registered: ", response ),
+        error: ( err ) => console.warn( "Error registering user: ", err )
       });
   }
 
   login(): void {
     if ( !this.isBrowser || !this.auth0 ) {
-      console.warn( "No se puede iniciar sesión en SSR" );
+      console.warn( "Could not start session on SSR" );
       return;
     }
 
@@ -84,10 +83,10 @@ export class AuthService {
 
   getToken(): Observable<string> {
     return this.isBrowser && this.auth0
-      ? from(this.auth0.getAccessTokenSilently()).pipe(
+      ? from( this.auth0.getAccessTokenSilently() ).pipe(
           catchError(error => {
-            console.error("❌ Error obteniendo el token:", error);
-            return of(''); // Devuelve un string vacío si hay error
+            console.error("❌ Error reloading token:", error);
+            return of('');
           })
         )
       : of('');

@@ -1,7 +1,6 @@
 package com.example.taskManager.infrastructure.task.adapter;
 
 import org.springframework.stereotype.Component;
-
 import com.example.taskManager.application.task.dto.TaskRequestDTO;
 import com.example.taskManager.application.task.dto.TaskResponseDTO;
 import com.example.taskManager.domain.task.Task;

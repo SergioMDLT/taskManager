@@ -18,36 +18,36 @@ import com.example.taskManager.application.task.usecase.UpdateTaskStatusUseCase;
 @Component
 public class TaskUseCaseFacade {
 
-    private final CreateTaskUseCase createTaskUseCase;
-    private final DeleteTaskUseCase deleteTaskUseCase;
-    private final GetTaskByIdUseCase getTaskByIdUseCase;
-    private final GetTasksByUserAndCompletionStatusUseCase getTasksByCompletionStatusUseCase;
-    private final GetTasksByUserAndTitleUseCase getTasksByTitleUseCase;
-    private final GetTasksByUserAndTitleAndCompletionStatusUseCase getTasksByUserAndTitleUseCase;
-    private final GetTasksByUserUseCase getTasksByUserUseCase;
-    private final UpdateTaskPriorityUseCase updateTaskPriorityUseCase;
-    private final UpdateTaskStatusUseCase updateTaskStatusUseCase;
+    private final CreateTaskUseCase                                 createTaskUseCase;
+    private final DeleteTaskUseCase                                 deleteTaskUseCase;
+    private final GetTaskByIdUseCase                                getTaskByIdUseCase;
+    private final GetTasksByUserAndCompletionStatusUseCase          getTasksByCompletionStatusUseCase;
+    private final GetTasksByUserAndTitleUseCase                     getTasksByTitleUseCase;
+    private final GetTasksByUserAndTitleAndCompletionStatusUseCase  getTasksByUserAndTitleUseCase;
+    private final GetTasksByUserUseCase                             getTasksByUserUseCase;
+    private final UpdateTaskPriorityUseCase                         updateTaskPriorityUseCase;
+    private final UpdateTaskStatusUseCase                           updateTaskStatusUseCase;
 
     public TaskUseCaseFacade(
-        CreateTaskUseCase createTaskUseCase,
-        DeleteTaskUseCase deleteTaskUseCase,
-        GetTaskByIdUseCase getTaskByIdUseCase,
-        GetTasksByUserAndCompletionStatusUseCase getTasksByCompletionStatusUseCase,
-        GetTasksByUserAndTitleUseCase getTasksByTitleUseCase,
-        GetTasksByUserAndTitleAndCompletionStatusUseCase getTasksByUserAndTitleUseCase,
-        GetTasksByUserUseCase getTasksByUserUseCase,
-        UpdateTaskPriorityUseCase updateTaskPriorityUseCase,
-        UpdateTaskStatusUseCase updateTaskStatusUseCase
+        CreateTaskUseCase                                   createTaskUseCase,
+        DeleteTaskUseCase                                   deleteTaskUseCase,
+        GetTaskByIdUseCase                                  getTaskByIdUseCase,
+        GetTasksByUserAndCompletionStatusUseCase            getTasksByCompletionStatusUseCase,
+        GetTasksByUserAndTitleUseCase                       getTasksByTitleUseCase,
+        GetTasksByUserAndTitleAndCompletionStatusUseCase    getTasksByUserAndTitleUseCase,
+        GetTasksByUserUseCase                               getTasksByUserUseCase,
+        UpdateTaskPriorityUseCase                           updateTaskPriorityUseCase,
+        UpdateTaskStatusUseCase                             updateTaskStatusUseCase
     ) {
-        this.createTaskUseCase = createTaskUseCase;
-        this.deleteTaskUseCase = deleteTaskUseCase;
-        this.getTaskByIdUseCase = getTaskByIdUseCase;
-        this.getTasksByCompletionStatusUseCase = getTasksByCompletionStatusUseCase;
-        this.getTasksByTitleUseCase = getTasksByTitleUseCase;
-        this.getTasksByUserAndTitleUseCase = getTasksByUserAndTitleUseCase;
-        this.getTasksByUserUseCase = getTasksByUserUseCase;
-        this.updateTaskPriorityUseCase = updateTaskPriorityUseCase;
-        this.updateTaskStatusUseCase = updateTaskStatusUseCase;
+        this.createTaskUseCase =                    createTaskUseCase;
+        this.deleteTaskUseCase =                    deleteTaskUseCase;
+        this.getTaskByIdUseCase =                   getTaskByIdUseCase;
+        this.getTasksByCompletionStatusUseCase =    getTasksByCompletionStatusUseCase;
+        this.getTasksByTitleUseCase =               getTasksByTitleUseCase;
+        this.getTasksByUserAndTitleUseCase =        getTasksByUserAndTitleUseCase;
+        this.getTasksByUserUseCase =                getTasksByUserUseCase;
+        this.updateTaskPriorityUseCase =            updateTaskPriorityUseCase;
+        this.updateTaskStatusUseCase =              updateTaskStatusUseCase;
     }
 
     public TaskResponseDTO getTaskById( Integer id ) {
@@ -85,4 +85,5 @@ public class TaskUseCaseFacade {
     public void deleteTask( Integer id, String auth0Id ) {
         deleteTaskUseCase.execute( id, auth0Id );
     }
+    
 }

@@ -75,8 +75,8 @@ export class HistoryPageComponent implements OnInit {
         }, 500);
       },
       error: ( err ) => {
-        console.error('Error loading tasks:', err);
-        this.toastService.showError('Error loading tasks');
+        console.error( "Error loading tasks: ", err );
+        this.toastService.showError( "Error loading tasks" );
         this.isLoading = false;
       },
     });
@@ -114,8 +114,8 @@ export class HistoryPageComponent implements OnInit {
         }, 500);
       },
       error: ( err ) => {
-        console.error( 'Error searching tasks:', err );
-        this.toastService.showError( 'Error searching tasks' );
+        console.error( "Error searching tasks: ", err );
+        this.toastService.showError( "Error searching tasks" );
         this.isLoading = false;
       },
     });

@@ -42,7 +42,7 @@ export class SearchboxComponent implements OnInit, OnDestroy {
   onKeyPress( searchTerm: string ): void {
     this.isLoading = true;
     this.debouncer.next( searchTerm );
-    setTimeout(() => this.isLoading = false, 500);
+    setTimeout(() => this.isLoading = false, 500 );
   }
 
 }

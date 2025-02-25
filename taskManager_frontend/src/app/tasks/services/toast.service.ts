@@ -25,4 +25,5 @@ export class ToastService {
       panelClass: [ 'info-toast' ],
     });
   }
+
 }

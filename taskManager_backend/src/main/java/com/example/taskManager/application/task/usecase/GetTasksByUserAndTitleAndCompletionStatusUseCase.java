@@ -18,7 +18,7 @@ public class GetTasksByUserAndTitleAndCompletionStatusUseCase {
 
     public GetTasksByUserAndTitleAndCompletionStatusUseCase( TaskRepository taskRepository, TaskMapper taskMapper ) {
         this.taskRepository = taskRepository;
-        this.taskMapper = taskMapper;
+        this.taskMapper =     taskMapper;
     }
 
     public Page<TaskResponseDTO> execute( String auth0Id, Boolean completed, String title, int page, int size ) {

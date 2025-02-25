@@ -16,4 +16,5 @@ public class AuthController {
         String email = auth0User.getAttribute( "email" );
         return ResponseEntity.ok( "Bienvenido, " + email );
     }
+    
 }

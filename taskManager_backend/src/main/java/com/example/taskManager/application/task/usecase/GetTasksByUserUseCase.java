@@ -18,7 +18,7 @@ public class GetTasksByUserUseCase {
 
     public GetTasksByUserUseCase( TaskRepository taskRepository, TaskMapper taskMapper ) {
         this.taskRepository = taskRepository;
-        this.taskMapper = taskMapper;
+        this.taskMapper =     taskMapper;
     }
 
     public Page<TaskResponseDTO> execute( String auth0Id, int page, int size, String sort ) {

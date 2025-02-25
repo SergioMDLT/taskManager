@@ -27,12 +27,13 @@ export class CreatePageComponent {
       .subscribe({
         next: ( task ) => {
           this.task = task;
-          this.toastService.showSuccess( 'Task created successfully' );
+          this.toastService.showSuccess( "Task created successfully" );
         },
         error: (err) => {
-          console.error('Error creating task:', err);
-          this.toastService.showError( 'Error creating task' );
+          console.error( "Error creating task: ", err );
+          this.toastService.showError( "Error creating task" );
         }
     });
   }
+
 }

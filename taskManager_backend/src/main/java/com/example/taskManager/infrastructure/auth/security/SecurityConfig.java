@@ -2,7 +2,6 @@ package com.example.taskManager.infrastructure.auth.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
@@ -16,27 +15,27 @@ import java.util.List;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain( HttpSecurity http ) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/tasks").authenticated()  // ✅ Protege `POST /tasks`
-                .requestMatchers("/tasks/**").authenticated()
+            .cors( cors -> cors.configurationSource(corsConfigurationSource() ))
+            .csrf( csrf -> csrf.disable() )
+            .authorizeHttpRequests( auth -> auth
+                .requestMatchers( "/tasks" ).authenticated()
+                .requestMatchers( "/tasks/**" ).authenticated()
                 .anyRequest().permitAll()
             )
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+            .oauth2ResourceServer( oauth2 -> oauth2.jwt( jwt -> jwt.jwtAuthenticationConverter( jwtAuthenticationConverter() )));
 
         return http.build();
     }
 
     private JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("permissions");  // 🔹 Usa "permissions" en lugar de "scope"
-        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        grantedAuthoritiesConverter.setAuthoritiesClaimName( "permissions" );
+        grantedAuthoritiesConverter.setAuthorityPrefix( "ROLE_" );
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter( grantedAuthoritiesConverter );
         return jwtAuthenticationConverter;
     }
 
@@ -44,7 +43,7 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins( List.of( "http://localhost:4200" )); // Permite Angular
+        config.setAllowedOrigins( List.of( "http://localhost:4200" ));
         config.setAllowedMethods( List.of( "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS" ));
         config.setAllowedHeaders( List.of( "Authorization", "Content-Type" ));
         config.setAllowCredentials( true );
@@ -62,4 +61,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration( "/**", config );
         return source;
     }
+    
 }

@@ -17,8 +17,8 @@ public class UpdateTaskStatusUseCase {
     private final TaskMapper     taskMapper;
 
     public UpdateTaskStatusUseCase( TaskRepository taskRepository, TaskMapper taskMapper ) {
-        this.taskRepository =   taskRepository;
-        this.taskMapper = taskMapper;
+        this.taskRepository = taskRepository;
+        this.taskMapper =     taskMapper;
     }
     
     @Transactional
