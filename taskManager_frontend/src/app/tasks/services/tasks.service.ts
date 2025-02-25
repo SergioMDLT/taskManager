@@ -18,9 +18,9 @@ export class TasksService {
 
   getTasks( params?: { completed?: boolean; id?: number; title?: string, page?: number; size?: number; sort?: string } ): Observable<any> {
     return this.http.get<any>( this.appUrl, { params } ).pipe(
-      switchMap(isAuthenticated => {
-        if (!isAuthenticated) {
-          this.toastService.showError("Usuario no autenticado. No se enviará la solicitud");
+      switchMap( isAuthenticated => {
+        if ( !isAuthenticated ) {
+          this.toastService.showError( "User not found. Request not sent" );
           return EMPTY;
         }
         return this.http.get(this.appUrl);
@@ -56,8 +56,8 @@ export class TasksService {
       );
   }
 
-  updateTask( id: number ): Observable<Task> {
-    return this.http.put<Task>( `${ this.appUrl }/${ id }`, {})
+  updateTaskCompletion( id: number ): Observable<Task> {
+    return this.http.patch<Task>( `${ this.appUrl }/${ id }`, {})
       .pipe(
         catchError( error => throwError(() => new Error( 'Failed to update task' ))),
       );

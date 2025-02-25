@@ -16,7 +16,7 @@
     </thead>
     <tbody cdkDropList (cdkDropListDropped)="onDrop($event)" [cdkDropListData]="tasks">
       <tr *ngFor="let task of tasks let index = index" cdkDrag [cdkDragRootElement]="'tr'" [cdkDragData]="task">
-        <td>{{ showPriority ? task.priority : index }}</td>
+        <td>{{ showPriority ? task.priority : index + 1 }}</td>
         <td>{{ task.title }}</td>
         <td>{{ task.description }}</td>
         <td>

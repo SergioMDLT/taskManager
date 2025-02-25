@@ -25,18 +25,18 @@ export class TasksTableComponent {
      ) { }
 
   onUpdateTask( id: number ): void {
-    this.taskService.updateTask( id )
+    this.taskService.updateTaskCompletion( id )
     .subscribe({
       next: ( updatedTask ) => {
         this.toastService.showSuccess( `Task with id ${id} updated successfully` );
-        const index = this.tasks.findIndex(task => task.id === updatedTask.id);
+        const index = this.tasks.findIndex( task => task.id === updatedTask.id );
         if (index !== -1) {
           this.tasks[index] = updatedTask;
         }
       },
-      error: (err) => {
-        console.error('Error creating task: ', err);
-        this.toastService.showError( 'Error updating task' );
+      error: ( err ) => {
+        console.error( "Error creating task: ", err );
+        this.toastService.showError( "Error updating task" );
       }
     });
   }
