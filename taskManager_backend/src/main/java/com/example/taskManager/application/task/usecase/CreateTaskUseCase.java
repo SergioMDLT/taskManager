@@ -42,11 +42,17 @@ public class CreateTaskUseCase {
         Task task = taskMapper.toEntity( taskRequestDTO );
         task.setUser( user );
 
-        if ( task.getPriority() == null ) {
-            Integer maxPriority = taskRepository.findMaxPriorityByUser_Auth0Id( auth0Id ).orElse( 0 );
-            task.setPriority( maxPriority + 1 );
+        Integer assignedPriority = task.getPriority();
+
+        if ( assignedPriority == null ) {
+            assignedPriority = taskRepository.findMaxPriorityByUser_Auth0Id( auth0Id ).orElse( 0 ) + 1;
+        } else {
+            if ( taskRepository.existsTaskWithPriority( auth0Id, assignedPriority )) {
+                throw new IllegalStateException( "User already has a task with priority: " + assignedPriority );
+            }
         }
 
+        task.setPriority( assignedPriority );
         return taskMapper.toDTO( taskRepository.save( task ));
     }
     

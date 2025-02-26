@@ -23,7 +23,26 @@ public class UpdateTaskStatusUseCase {
     public TaskResponseDTO execute( Integer taskId ) {
         Task task = taskRepository.findById( taskId )
             .orElseThrow(() -> new EntityNotFoundException( "Task not found" ));
-        
+
+        String auth0Id = task.getUser().getAuth0Id();
+
+        if ( Boolean.TRUE.equals( task.getCompleted() )) {
+            Integer newPriority = taskRepository.findMaxPriorityByUser_Auth0Id( auth0Id ).orElse( 0 ) + 1;
+
+            if ( taskRepository.existsTaskWithPriority( auth0Id, newPriority )) {
+                throw new IllegalStateException( "Task with priority " + newPriority + " already exists for user: " + auth0Id );
+            }
+
+            task.setPriority( newPriority );
+        } else {
+            Integer removedPriority = task.getPriority();
+            task.setPriority( null );
+
+            if ( removedPriority != null ) {
+                taskRepository.reducePrioritiesAfterCompletion( auth0Id, removedPriority );
+            }
+        }
+
         task.setCompleted( !task.getCompleted() );
         taskRepository.save( task );
 

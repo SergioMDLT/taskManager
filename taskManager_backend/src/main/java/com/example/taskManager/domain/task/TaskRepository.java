@@ -20,49 +20,57 @@ public interface TaskRepository extends JpaRepository<Task, Integer>{
     Page<Task> findByUser_Auth0IdAndTitleContainingIgnoreCase( String auth0Id, String title, Pageable pageable );
 
     Page<Task> findByUser_Auth0IdAndCompletedAndTitleContainingIgnoreCase( String auth0Id, Boolean completed, String title, Pageable pageable );
-    
+
+    @Query( "SELECT COUNT(t) > 0 FROM Task t WHERE t.user.auth0Id = :auth0Id AND t.priority = :priority" )
+    boolean existsTaskWithPriority( @Param( "auth0Id" ) String auth0Id, @Param( "priority" ) Integer priority );
+
     @Query( "SELECT MAX(t.priority) FROM Task t WHERE t.user.auth0Id = :auth0Id" )
     Optional<Integer> findMaxPriorityByUser_Auth0Id( @Param( "auth0Id" ) String auth0Id );
 
-
-
-    
+    @Modifying
+    @Transactional
+    @Query( value = """
+        UPDATE tasks t
+        JOIN users u ON u.id = t.user_id
+        SET t.priority = t.priority + 1
+        WHERE u.auth0id = :auth0Id
+          AND t.priority >= :newPriority
+          AND t.id != :taskId
+        """, nativeQuery = true)
+    void shiftPrioritiesUp(
+        @Param( "auth0Id" ) String auth0Id,
+        @Param( "taskId" ) Integer taskId,
+        @Param( "newPriority" ) Integer newPriority
+    );
 
     @Modifying
     @Transactional
-    @Query(value = """
+    @Query( value = """
         UPDATE tasks t
         JOIN users u ON u.id = t.user_id
-        SET t.priority = 0
-        WHERE t.id = :taskId AND u.auth0id = :auth0Id
+        SET t.priority = t.priority - 1
+        WHERE u.auth0id = :auth0Id
+          AND t.priority <= :newPriority
+          AND t.id != :taskId
         """, nativeQuery = true)
-    void temporarilySetPriorityToZero(@Param("taskId") Integer taskId, @Param("auth0Id") String auth0Id);
+    void shiftPrioritiesDown(
+        @Param( "auth0Id" ) String auth0Id,
+        @Param( "taskId" ) Integer taskId,
+        @Param( "newPriority" ) Integer newPriority
+    );
 
     @Modifying
     @Transactional
-    @Query(value = """
+    @Query( value = """
         UPDATE tasks t
         JOIN users u ON u.id = t.user_id
-        SET t.priority = t.priority + :shift
-        WHERE u.auth0id = :auth0Id AND t.id != :taskId AND t.priority BETWEEN :start AND :end
-        ORDER BY CASE WHEN :shift > 0 THEN -t.priority ELSE t.priority END
+        SET t.priority = t.priority - 1
+        WHERE u.auth0id = :auth0Id
+          AND t.priority > :removedPriority
         """, nativeQuery = true)
-    void shiftOtherTasksPriority(@Param("auth0Id") String auth0Id,
-                                 @Param("taskId") Integer taskId,
-                                 @Param("start") Integer start,
-                                 @Param("end") Integer end,
-                                 @Param("shift") Integer shift);
-
-    @Modifying
-    @Transactional
-    @Query(value = """
-        UPDATE tasks t
-        JOIN users u ON u.id = t.user_id
-        SET t.priority = :newPriority
-        WHERE t.id = :taskId AND u.auth0id = :auth0Id
-        """, nativeQuery = true)
-    void finalizePriority(@Param("taskId") Integer taskId,
-                          @Param("auth0Id") String auth0Id,
-                          @Param("newPriority") Integer newPriority);
+    void reducePrioritiesAfterCompletion(
+        @Param( "auth0Id" ) String auth0Id,
+        @Param( "removedPriority" ) Integer removedPriority
+    );
 
 }

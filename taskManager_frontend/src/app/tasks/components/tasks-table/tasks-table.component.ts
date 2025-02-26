@@ -22,9 +22,9 @@ export class TasksTableComponent {
   @Output() taskCompleted: EventEmitter<Task> = new EventEmitter<Task>();
 
   constructor (
-      private readonly taskService: TasksService,
-      private readonly toastService: ToastService
-     ) { }
+    private readonly taskService:   TasksService,
+    private readonly toastService: ToastService
+  ) { }
 
   onUpdateTask( id: number ): void {
     this.taskService.updateTaskCompletion( id )
@@ -32,11 +32,13 @@ export class TasksTableComponent {
       next: ( updatedTask ) => {
         this.toastService.showSuccess( `Task with id ${id} updated successfully` );
         const index = this.tasks.findIndex( task => task.id === updatedTask.id );
-        if (index !== -1) {
+
+        if ( index !== -1 ) {
           this.tasks[index] = updatedTask;
         }
 
         if ( updatedTask.completed ) {
+          this.adjustPrioritiesAfterCompletion( updatedTask );
           this.taskCompleted.emit( updatedTask );
         }
       },
@@ -63,7 +65,22 @@ export class TasksTableComponent {
     }
   }
 
-  onDrop(event: CdkDragDrop<Task[]>): void {
+  private adjustPrioritiesAfterCompletion( task: Task ): void {
+    const removedPriority = task.priority;
+
+    this.tasks.forEach( t => {
+      if ( t.priority !== null && removedPriority !== null && t.priority > removedPriority ) {
+        t.priority -= 1;
+      }
+    });
+
+    this.tasks = this.tasks.filter( t => t.id !== task.id );
+
+    this.taskCompleted.emit( task );
+  }
+
+  onDrop( event: CdkDragDrop<Task[]> ): void {
+    if ( event.previousIndex === event.currentIndex ) return;
     moveItemInArray( this.tasks, event.previousIndex, event.currentIndex );
 
     const updatedTasks = this.tasks.map(( task, index ) => ({

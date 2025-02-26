@@ -155,12 +155,25 @@ export class MainPageComponent implements OnInit {
   }
 
   removeCompletedTask( task: Task ): void {
-    this.tasks = this.tasks.filter(( t: Task ) => t.id !== task.id );
+    this.tasks = this.tasks
+        .filter( t => t.id !== task.id )
+        .map(( t, index ) => ({
+            ...t,
+            priority: index + 1,
+        }));
 
     this.getAuthenticatedUserId( auth0Id => {
         const storedTasks = localStorage.getItem( `${this.tasksKey}-${auth0Id}` );
         if ( storedTasks ) {
-            const parsedTasks = JSON.parse( storedTasks ).filter(( t: Task ) => t.id !== task.id );
+            let parsedTasks = JSON.parse( storedTasks );
+
+            parsedTasks = parsedTasks
+                .filter(( t: Task ) => t.id !== task.id )
+                .map(( t: Task, index: number ) => ({
+                    ...t,
+                    priority: index + 1,
+                }));
+
             localStorage.setItem( `${this.tasksKey}-${auth0Id}`, JSON.stringify( parsedTasks ));
         }
     });

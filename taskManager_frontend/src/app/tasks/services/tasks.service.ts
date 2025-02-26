@@ -105,9 +105,13 @@ export class TasksService {
           return EMPTY;
         }
 
-        return this.http.patch<void>( `${this.appUrl}/${id}/priority`, null, {
-          params: { newPriority: newPriority },
-          headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
+        const body = { priority: newPriority };
+
+        return this.http.patch<void>( `${this.appUrl}/${id}`, body, {
+          headers: new HttpHeaders({
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }),
         });
       }),
       catchError( error => {

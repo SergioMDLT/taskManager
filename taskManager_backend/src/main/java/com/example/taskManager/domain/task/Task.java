@@ -20,10 +20,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(
-    name = "tasks",
-    uniqueConstraints = @UniqueConstraint( columnNames = { "user_id", "priority" })
-)
+@Table( name = "tasks" )
 public class Task {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
