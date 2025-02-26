@@ -21,7 +21,7 @@ public class GetTasksByUserAndCompletionStatusUseCase {
     }
 
     public Page<TaskResponseDTO> execute( String auth0Id, Boolean completed, int page, int size ) {
-        Pageable pageable = PageRequest.of( page, size, Sort.by( Sort.Direction.DESC, "priority" ));
+        Pageable pageable = PageRequest.of( page, size, Sort.by( Sort.Direction.ASC, "priority" ));
         return taskRepository.findByUser_Auth0IdAndCompleted( auth0Id, completed, pageable )
                 .map( taskMapper::toDTO );
     }

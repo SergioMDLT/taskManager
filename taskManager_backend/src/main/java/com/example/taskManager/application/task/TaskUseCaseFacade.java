@@ -2,7 +2,6 @@ package com.example.taskManager.application.task;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-
 import com.example.taskManager.application.task.dto.TaskRequestDTO;
 import com.example.taskManager.application.task.dto.TaskResponseDTO;
 import com.example.taskManager.application.task.usecase.CreateTaskUseCase;
@@ -23,7 +22,7 @@ public class TaskUseCaseFacade {
     private final GetTaskByIdUseCase                                getTaskByIdUseCase;
     private final GetTasksByUserAndCompletionStatusUseCase          getTasksByCompletionStatusUseCase;
     private final GetTasksByUserAndTitleUseCase                     getTasksByTitleUseCase;
-    private final GetTasksByUserAndTitleAndCompletionStatusUseCase  getTasksByUserAndTitleUseCase;
+    private final GetTasksByUserAndTitleAndCompletionStatusUseCase  getTasksByTitleAndCompletionUseCase;
     private final GetTasksByUserUseCase                             getTasksByUserUseCase;
     private final UpdateTaskPriorityUseCase                         updateTaskPriorityUseCase;
     private final UpdateTaskStatusUseCase                           updateTaskStatusUseCase;
@@ -34,7 +33,7 @@ public class TaskUseCaseFacade {
         GetTaskByIdUseCase                                  getTaskByIdUseCase,
         GetTasksByUserAndCompletionStatusUseCase            getTasksByCompletionStatusUseCase,
         GetTasksByUserAndTitleUseCase                       getTasksByTitleUseCase,
-        GetTasksByUserAndTitleAndCompletionStatusUseCase    getTasksByUserAndTitleUseCase,
+        GetTasksByUserAndTitleAndCompletionStatusUseCase    getTasksByTitleAndCompletionUseCase,
         GetTasksByUserUseCase                               getTasksByUserUseCase,
         UpdateTaskPriorityUseCase                           updateTaskPriorityUseCase,
         UpdateTaskStatusUseCase                             updateTaskStatusUseCase
@@ -44,7 +43,7 @@ public class TaskUseCaseFacade {
         this.getTaskByIdUseCase =                   getTaskByIdUseCase;
         this.getTasksByCompletionStatusUseCase =    getTasksByCompletionStatusUseCase;
         this.getTasksByTitleUseCase =               getTasksByTitleUseCase;
-        this.getTasksByUserAndTitleUseCase =        getTasksByUserAndTitleUseCase;
+        this.getTasksByTitleAndCompletionUseCase =  getTasksByTitleAndCompletionUseCase;
         this.getTasksByUserUseCase =                getTasksByUserUseCase;
         this.updateTaskPriorityUseCase =            updateTaskPriorityUseCase;
         this.updateTaskStatusUseCase =              updateTaskStatusUseCase;
@@ -66,8 +65,8 @@ public class TaskUseCaseFacade {
         return getTasksByCompletionStatusUseCase.execute( auth0Id, completed, page, size );
     }
 
-    public Page<TaskResponseDTO> getTasksByUserAndTitle( String auth0Id, Boolean completed, String title, int page, int size ) {
-        return getTasksByUserAndTitleUseCase.execute( auth0Id, completed, title, page, size );
+    public Page<TaskResponseDTO> getTasksByTitleAndCompletion( String auth0Id, Boolean completed, String title, int page, int size ) {
+        return getTasksByTitleAndCompletionUseCase.execute( auth0Id, completed, title, page, size );
     }
 
     public TaskResponseDTO createTask( TaskRequestDTO taskRequestDTO ) {

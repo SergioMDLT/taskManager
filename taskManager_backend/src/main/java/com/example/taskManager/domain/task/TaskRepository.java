@@ -24,6 +24,10 @@ public interface TaskRepository extends JpaRepository<Task, Integer>{
     @Query( "SELECT MAX(t.priority) FROM Task t WHERE t.user.auth0Id = :auth0Id" )
     Optional<Integer> findMaxPriorityByUser_Auth0Id( @Param( "auth0Id" ) String auth0Id );
 
+
+
+    
+
     @Modifying
     @Transactional
     @Query(value = """

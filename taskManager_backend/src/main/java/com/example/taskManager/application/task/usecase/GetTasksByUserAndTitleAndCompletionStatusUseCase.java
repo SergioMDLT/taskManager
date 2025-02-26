@@ -5,7 +5,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import com.example.taskManager.application.task.dto.TaskResponseDTO;
 import com.example.taskManager.domain.task.TaskRepository;
 import com.example.taskManager.infrastructure.task.adapter.TaskMapper;
@@ -22,7 +21,7 @@ public class GetTasksByUserAndTitleAndCompletionStatusUseCase {
     }
 
     public Page<TaskResponseDTO> execute( String auth0Id, Boolean completed, String title, int page, int size ) {
-        Pageable pageable = PageRequest.of( page, size, Sort.by( Sort.Direction.DESC, "priority" ));
+        Pageable pageable = PageRequest.of( page, size, Sort.by( Sort.Direction.ASC, "priority" ));
         return taskRepository.findByUser_Auth0IdAndCompletedAndTitleContainingIgnoreCase( auth0Id, completed, title, pageable )
                 .map( taskMapper::toDTO );
     }

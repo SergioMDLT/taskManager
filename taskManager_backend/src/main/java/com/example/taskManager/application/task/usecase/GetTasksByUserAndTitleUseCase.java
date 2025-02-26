@@ -5,7 +5,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import com.example.taskManager.application.task.dto.TaskResponseDTO;
 import com.example.taskManager.domain.task.TaskRepository;
 import com.example.taskManager.infrastructure.task.adapter.TaskMapper;

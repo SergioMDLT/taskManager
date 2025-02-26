@@ -56,7 +56,7 @@ public class TaskController {
         }
         
         if ( title != null && completed != null ) {
-            return ResponseEntity.ok( taskUseCaseFacade.getTasksByUserAndTitle( auth0Id, completed, title, page, size ));
+            return ResponseEntity.ok( taskUseCaseFacade.getTasksByTitleAndCompletion( auth0Id, completed, title, page, size ));
         } else if ( completed != null ) {
             return ResponseEntity.ok( taskUseCaseFacade.getTasksByCompletionStatus( auth0Id, completed, page, size ));
         } else if ( title != null ) {
@@ -69,8 +69,15 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskResponseDTO> createTask( @RequestBody TaskRequestDTO taskRequestDTO ){
-        String auth0Id = authService.getAuthenticatedUser().getAuth0Id();
+    public ResponseEntity<TaskResponseDTO> createTask(
+        @AuthenticationPrincipal Jwt jwt,
+        @RequestBody TaskRequestDTO taskRequestDTO
+    ) {
+        String auth0Id = jwt.getClaim( "sub" );
+        if ( auth0Id == null ) {
+            throw new IllegalArgumentException( "El auth0Id no se encontró en el token" );
+        }
+
         taskRequestDTO.setAuth0Id( auth0Id );
         TaskResponseDTO createdTask = taskUseCaseFacade.createTask( taskRequestDTO );
         return ResponseEntity.ok( createdTask );
@@ -99,7 +106,6 @@ public class TaskController {
 
         return ResponseEntity.ok( updatedTask );
     }
-
 
     @DeleteMapping( "/{id}" )
     public ResponseEntity<Void> deleteTask( @PathVariable Integer id ) {

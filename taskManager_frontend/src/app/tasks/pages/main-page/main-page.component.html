@@ -17,7 +17,8 @@
 
     <tasks-table
       [tasks]="tasks"
-      [showPriority]="true">
+      [showPriority]="true"
+      (taskCompleted)="removeCompletedTask($event)">
     </tasks-table>
 
     <div *ngIf="isLoading">

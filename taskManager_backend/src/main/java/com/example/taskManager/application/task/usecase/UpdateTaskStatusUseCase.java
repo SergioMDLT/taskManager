@@ -2,12 +2,10 @@ package com.example.taskManager.application.task.usecase;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.example.taskManager.application.task.dto.TaskResponseDTO;
 import com.example.taskManager.domain.task.Task;
 import com.example.taskManager.domain.task.TaskRepository;
 import com.example.taskManager.infrastructure.task.adapter.TaskMapper;
-
 import jakarta.persistence.EntityNotFoundException;
 
 @Service

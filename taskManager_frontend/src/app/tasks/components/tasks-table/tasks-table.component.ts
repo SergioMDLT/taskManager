@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Task } from '../../models/task';
 import { TasksService } from '../../services/tasks.service';
 import { ToastService } from '../../services/toast.service';
@@ -19,6 +19,8 @@ export class TasksTableComponent {
   @Input()
   showPriority: boolean = false;
 
+  @Output() taskCompleted: EventEmitter<Task> = new EventEmitter<Task>();
+
   constructor (
       private readonly taskService: TasksService,
       private readonly toastService: ToastService
@@ -33,6 +35,10 @@ export class TasksTableComponent {
         if (index !== -1) {
           this.tasks[index] = updatedTask;
         }
+
+        if ( updatedTask.completed ) {
+          this.taskCompleted.emit( updatedTask );
+        }
       },
       error: ( err ) => {
         console.error( "Error creating task: ", err );
@@ -42,14 +48,14 @@ export class TasksTableComponent {
   }
 
   onDeleteTask( id: number ): void {
-    if( confirm( 'Delete forever?' )){
+    if( confirm( "Delete forever?" )){
       this.taskService.deleteTask( id )
       .subscribe({
         next: ( ) => {
           this.toastService.showSuccess( `Task with id ${id} deleted successfully` );
-          this.tasks = this.tasks.filter((task) => task.id !== id);
+          this.tasks = this.tasks.filter(( task ) => task.id !== id );
         },
-        error: (err) => {
+        error: ( err ) => {
           console.error( "Error deleting task: ", err);
           this.toastService.showError( "Error deleting task" );
         }
