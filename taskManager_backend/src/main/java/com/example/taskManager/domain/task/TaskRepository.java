@@ -32,38 +32,6 @@ public interface TaskRepository extends JpaRepository<Task, Integer>{
     @Query( value = """
         UPDATE tasks t
         JOIN users u ON u.id = t.user_id
-        SET t.priority = t.priority + 1
-        WHERE u.auth0id = :auth0Id
-          AND t.priority >= :newPriority
-          AND t.id != :taskId
-        """, nativeQuery = true)
-    void shiftPrioritiesUp(
-        @Param( "auth0Id" ) String auth0Id,
-        @Param( "taskId" ) Integer taskId,
-        @Param( "newPriority" ) Integer newPriority
-    );
-
-    @Modifying
-    @Transactional
-    @Query( value = """
-        UPDATE tasks t
-        JOIN users u ON u.id = t.user_id
-        SET t.priority = t.priority - 1
-        WHERE u.auth0id = :auth0Id
-          AND t.priority <= :newPriority
-          AND t.id != :taskId
-        """, nativeQuery = true)
-    void shiftPrioritiesDown(
-        @Param( "auth0Id" ) String auth0Id,
-        @Param( "taskId" ) Integer taskId,
-        @Param( "newPriority" ) Integer newPriority
-    );
-
-    @Modifying
-    @Transactional
-    @Query( value = """
-        UPDATE tasks t
-        JOIN users u ON u.id = t.user_id
         SET t.priority = t.priority - 1
         WHERE u.auth0id = :auth0Id
           AND t.priority > :removedPriority
@@ -72,5 +40,15 @@ public interface TaskRepository extends JpaRepository<Task, Integer>{
         @Param( "auth0Id" ) String auth0Id,
         @Param( "removedPriority" ) Integer removedPriority
     );
+
+    @Transactional
+    @Modifying
+    @Query( "UPDATE Task t SET t.priority = t.priority + 1 WHERE t.user.auth0Id = :auth0Id AND t.priority BETWEEN :start AND :end" )
+    void incrementPriorities( @Param( "auth0Id" ) String auth0Id, @Param( "start" ) Integer start, @Param( "end" ) Integer end );
+
+    @Transactional
+    @Modifying
+    @Query( "UPDATE Task t SET t.priority = t.priority - 1 WHERE t.user.auth0Id = :auth0Id AND t.priority BETWEEN :start AND :end" )
+    void decrementPriorities(@Param( "auth0Id" ) String auth0Id, @Param( "start" ) Integer start, @Param( "end" ) Integer end );
 
 }
