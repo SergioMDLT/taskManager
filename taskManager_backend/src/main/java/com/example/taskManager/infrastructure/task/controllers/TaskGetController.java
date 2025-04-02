@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.taskManager.application.task.usecase.TaskGetterById;
 import com.example.taskManager.application.task.usecase.TaskSearcher;
-import com.example.taskManager.application.user.auth.usecase.AuthService;
+import com.example.taskManager.application.user.auth.usecase.AuthenticatedUserProvider;
 import com.example.taskManager.infrastructure.task.dtos.TaskResponseDTO;
 import com.example.taskManager.infrastructure.task.dtos.TaskSearchFiltersDTO;
 
@@ -14,18 +14,18 @@ import com.example.taskManager.infrastructure.task.dtos.TaskSearchFiltersDTO;
 @CrossOrigin("http://localhost:4200")
 public class TaskGetController {
 
-    private final AuthService       authService;
-    private final TaskGetterById    taskGetterById;
-    private final TaskSearcher      taskSearcher;
+    private final AuthenticatedUserProvider authenticatedUserProvider;
+    private final TaskGetterById            taskGetterById;
+    private final TaskSearcher              taskSearcher;
 
     public TaskGetController(
-        AuthService     authService,
-        TaskGetterById  taskGetterById,
-        TaskSearcher    taskSearcher
-    ) {
-        this.authService =      authService;
-        this.taskGetterById =   taskGetterById;
-        this.taskSearcher =     taskSearcher;
+            AuthenticatedUserProvider   authenticatedUserProvider,
+            TaskGetterById              taskGetterById,
+            TaskSearcher                taskSearcher
+        ) {
+            this.authenticatedUserProvider =    authenticatedUserProvider;
+            this.taskGetterById =               taskGetterById;
+            this.taskSearcher =                 taskSearcher;
     }
 
     @GetMapping("/{id}")
@@ -41,7 +41,7 @@ public class TaskGetController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sort) {
 
-        String auth0Id = authService.getAuthenticatedUser().getAuth0Id();
+        String auth0Id = authenticatedUserProvider.execute().getAuth0Id();
 
         TaskSearchFiltersDTO filters = new TaskSearchFiltersDTO(auth0Id, title, completed, page, size, sort);
         return ResponseEntity.ok(taskSearcher.search(filters));
