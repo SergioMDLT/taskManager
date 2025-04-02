@@ -10,17 +10,17 @@ import com.example.taskManager.infrastructure.task.dtos.TaskResponseDTO;
 @RestController
 @RequestMapping("/tasks")
 @CrossOrigin("http://localhost:4200")
-public class TaskCreateController {
+public class TaskPostController {
 
     private final AuthenticatedUserProvider authenticatedUserProvider;
     private final TaskCreator               taskCreator;
 
-    public TaskCreateController(
+    public TaskPostController(
         AuthenticatedUserProvider   authenticatedUserProvider,
         TaskCreator                 taskCreator
     ) {
-        this.authenticatedUserProvider = authenticatedUserProvider;
-        this.taskCreator = taskCreator;
+        this.authenticatedUserProvider =    authenticatedUserProvider;
+        this.taskCreator =                  taskCreator;
     }
 
     @PostMapping
