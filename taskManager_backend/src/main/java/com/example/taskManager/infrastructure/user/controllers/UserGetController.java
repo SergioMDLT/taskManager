@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.taskManager.application.user.auth.usecase.AuthenticatedUserProvider;
+import com.example.taskManager.application.auth.usecase.AuthenticatedUserProvider;
 import com.example.taskManager.infrastructure.auth.dtos.AuthenticatedUserDTO;
 
 @RestController

@@ -1,4 +1,4 @@
-package com.example.taskManager.application.user.auth.usecase;
+package com.example.taskManager.application.auth.usecase;
 
 import java.util.List;
 import org.springframework.security.core.context.SecurityContextHolder;

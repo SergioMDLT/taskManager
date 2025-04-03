@@ -2,8 +2,8 @@ package com.example.taskManager.infrastructure.task.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.taskManager.application.auth.usecase.AuthenticatedUserProvider;
 import com.example.taskManager.application.task.usecase.TaskDeleter;
-import com.example.taskManager.application.user.auth.usecase.AuthenticatedUserProvider;
 
 @RestController
 @RequestMapping("/tasks")

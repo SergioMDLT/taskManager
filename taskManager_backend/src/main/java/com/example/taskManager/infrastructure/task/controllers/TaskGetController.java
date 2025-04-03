@@ -3,9 +3,9 @@ package com.example.taskManager.infrastructure.task.controllers;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.taskManager.application.auth.usecase.AuthenticatedUserProvider;
 import com.example.taskManager.application.task.usecase.TaskGetterById;
 import com.example.taskManager.application.task.usecase.TaskSearcher;
-import com.example.taskManager.application.user.auth.usecase.AuthenticatedUserProvider;
 import com.example.taskManager.infrastructure.task.dtos.TaskResponseDTO;
 import com.example.taskManager.infrastructure.task.dtos.TaskSearchFiltersDTO;
 

@@ -2,7 +2,7 @@ package com.example.taskManager.application.task.usecase;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.example.taskManager.application.user.auth.usecase.AuthenticatedUserProvider;
+import com.example.taskManager.application.auth.usecase.AuthenticatedUserProvider;
 import com.example.taskManager.domain.task.interfaces.TaskRepositoryPort;
 import com.example.taskManager.infrastructure.task.dtos.TaskRequestDTO;
 import com.example.taskManager.infrastructure.task.dtos.TaskResponseDTO;
