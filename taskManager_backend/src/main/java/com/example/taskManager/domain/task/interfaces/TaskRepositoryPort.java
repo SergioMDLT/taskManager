@@ -15,6 +15,8 @@ public interface TaskRepositoryPort {
 
     Page<Task> findByUserId(Integer userId, Pageable pageable);
 
+    Optional<Task> findByIdAndUserId(Integer taskId, Integer userId);
+
     Page<Task> findByUserIdAndTitle(Integer userId, String title, Pageable pageable);
 
     Page<Task> findByUserIdAndCompleted(Integer userId, Boolean completed, Pageable pageable);

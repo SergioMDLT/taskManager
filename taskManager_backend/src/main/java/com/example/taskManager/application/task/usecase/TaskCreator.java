@@ -15,17 +15,18 @@ public class TaskCreator {
     private final TaskRepositoryPort            taskRepositoryPort;
 
     public TaskCreator(
-            CreateTaskApplicationMapper createTaskApplicationMapper,
-            TaskRepositoryPort          taskRepositoryPort
-        ) {
-            this.createTaskApplicationMapper =  createTaskApplicationMapper;
-            this.taskRepositoryPort =           taskRepositoryPort;
+        CreateTaskApplicationMapper createTaskApplicationMapper,
+        TaskRepositoryPort          taskRepositoryPort
+    ) {
+        this.createTaskApplicationMapper =  createTaskApplicationMapper;
+        this.taskRepositoryPort =           taskRepositoryPort;
     }
 
     @Transactional
     public CreateTaskOutputDto execute(CreateTaskInputDto inputDTO) {
         Integer userId = inputDTO.getUserId();
         Task task = createTaskApplicationMapper.toDomain(inputDTO, userId);
+        task.setUserId(userId);
         Integer assignedPriority = task.getPriority();
 
         if (assignedPriority == null) {

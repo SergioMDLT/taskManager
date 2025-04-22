@@ -16,6 +16,8 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer>{
 
     Optional<TaskEntity> findById(Integer id);
 
+    Optional<TaskEntity> findByIdAndUser_Auth0Id(Integer id, String auth0Id);
+
     Page<TaskEntity> findByUser_Auth0Id(String auth0Id, Pageable pageable);
 
     Page<TaskEntity> findByUser_Auth0IdAndCompleted(String auth0Id, Boolean completed, Pageable pageable);

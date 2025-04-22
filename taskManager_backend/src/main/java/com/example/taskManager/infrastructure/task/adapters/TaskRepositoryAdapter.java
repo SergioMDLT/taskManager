@@ -39,6 +39,13 @@ public class TaskRepositoryAdapter implements TaskRepositoryPort {
     @Override
     public Task save(Task task) {
         TaskEntity entity = taskEntityMapper.toEntity(task);
+
+        if (task.getUserId() != null) {
+            UserEntity user = userRepository.findById(task.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + task.getUserId()));
+            entity.setUser(user);
+        }
+
         TaskEntity savedEntity = taskRepository.save(entity);
         return taskEntityMapper.toDomain(savedEntity);
     }
@@ -59,6 +66,14 @@ public class TaskRepositoryAdapter implements TaskRepositoryPort {
         return taskRepository.findByUser_Auth0Id(resolveAuth0Id(userId), pageable)
             .map(taskEntityMapper::toDomain);
     }
+
+    @Override
+    public Optional<Task> findByIdAndUserId(Integer taskId, Integer userId) {
+        String auth0Id = resolveAuth0Id(userId);
+        return taskRepository.findByIdAndUser_Auth0Id(taskId, auth0Id)
+            .map(taskEntityMapper::toDomain);
+    }
+
 
     @Override
     public Page<Task> findByUserIdAndTitle(Integer userId, String title, Pageable pageable) {

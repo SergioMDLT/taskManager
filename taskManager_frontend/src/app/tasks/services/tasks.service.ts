@@ -86,7 +86,7 @@ export class TasksService {
           return EMPTY;
         }
 
-        return this.http.patch<Task>( `${this.appUrl}/${id}`, {}, {
+        return this.http.patch<Task>( `${this.appUrl}/${id}/completion`, {}, {
           headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
         });
       }),
@@ -107,7 +107,7 @@ export class TasksService {
 
         const body = { priority: newPriority };
 
-        return this.http.patch<void>( `${this.appUrl}/${id}`, body, {
+        return this.http.patch<void>( `${this.appUrl}/${id}/priority`, body, {
           headers: new HttpHeaders({
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',

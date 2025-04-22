@@ -3,6 +3,7 @@ package com.example.taskManager.infrastructure.task.mappers;
 import com.example.taskManager.domain.task.models.Task;
 import com.example.taskManager.infrastructure.task.entities.TaskEntity;
 import com.example.taskManager.infrastructure.user.entities.UserEntity;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,7 +16,6 @@ public class TaskEntityMapper {
         entity.setDescription(task.getDescription());
         entity.setCompleted(task.getCompleted());
         entity.setPriority(task.getPriority());
-
         if (task.getUserId() != null) {
             UserEntity user = new UserEntity();
             user.setId(task.getUserId());

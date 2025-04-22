@@ -1,4 +1,4 @@
-package com.example.taskManager.infrastructure.task.dtos;
+package com.example.taskManager.application.task.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,11 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatchTaskResponseDto {
+public class UpdateTaskPriorityInputDto {
     private Integer id;
-    private String  title;
-    private String  description;
-    private Boolean completed;
+    private Integer userId;
     private Integer priority;
-
+    
 }
