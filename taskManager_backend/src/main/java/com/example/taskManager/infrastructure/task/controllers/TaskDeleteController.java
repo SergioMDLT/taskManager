@@ -2,8 +2,8 @@ package com.example.taskManager.infrastructure.task.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.example.taskManager.application.auth.usecase.AuthenticatedUserProvider;
 import com.example.taskManager.application.task.usecase.TaskDeleter;
+import com.example.taskManager.infrastructure.auth.services.AuthenticatedUserProvider;
 
 @RestController
 @RequestMapping("/tasks")
@@ -23,8 +23,8 @@ public class TaskDeleteController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Integer id) {
-        String auth0Id = authenticatedUserProvider.execute().getAuth0Id();
-        taskDeleter.execute(id, auth0Id);
+        Integer userId = authenticatedUserProvider.execute().getUserId();
+        taskDeleter.execute(id, userId);
         return ResponseEntity.noContent().build();
     }
 

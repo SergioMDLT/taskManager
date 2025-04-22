@@ -1,10 +1,14 @@
 package com.example.taskManager.domain.user.interfaces;
 
-import com.example.taskManager.infrastructure.user.entities.User;
 import java.util.Optional;
+import com.example.taskManager.domain.user.models.User;
 
 public interface UserRepositoryPort {
-    Optional<User> findByAuth0Id(String auth0Id);
+
     User save(User user);
-    
+
+    Optional<User> findById(Integer id);
+
+    Optional<User> findByExternalId(String externalId);
+
 }

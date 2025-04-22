@@ -11,13 +11,14 @@ public class Auth0JwtDecoder {
 
     private final Auth0Properties auth0Properties;
 
-    public Auth0JwtDecoder( Auth0Properties auth0Properties ) {
+    public Auth0JwtDecoder(Auth0Properties auth0Properties) {
         this.auth0Properties = auth0Properties;
     }
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withJwkSetUri( auth0Properties.issuerUri().replaceAll( "/$", "" ) + "/.well-known/jwks.json" ).build();
+        return NimbusJwtDecoder
+                .withJwkSetUri(auth0Properties.issuerUri().replaceAll("/$", "") + "/.well-known/jwks.json").build();
     }
-    
+
 }

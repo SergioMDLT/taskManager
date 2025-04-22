@@ -1,34 +1,34 @@
 package com.example.taskManager.domain.task.interfaces;
 
-import com.example.taskManager.infrastructure.task.entities.TaskEntity;
+import com.example.taskManager.domain.task.models.Task;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface TaskRepositoryPort {
 
-    Optional<TaskEntity> findById(Integer id);
+    Task save(Task task);
 
-    Page<TaskEntity> findByUserId(String auth0Id, Pageable pageable);
+    void delete(Task task);
 
-    Page<TaskEntity> findByUserIdAndTitle(String auth0Id, String title, Pageable pageable);
+    Optional<Task> findById(Integer id);
 
-    Page<TaskEntity> findByUserIdAndCompleted(String auth0Id, Boolean completed, Pageable pageable);
+    Page<Task> findByUserId(Integer userId, Pageable pageable);
 
-    Page<TaskEntity> findByUserIdAndCompletedAndTitle(String auth0Id, Boolean completed, String title, Pageable pageable);
+    Page<Task> findByUserIdAndTitle(Integer userId, String title, Pageable pageable);
 
-    TaskEntity save(TaskEntity task);
+    Page<Task> findByUserIdAndCompleted(Integer userId, Boolean completed, Pageable pageable);
 
-    void delete(TaskEntity task);
+    Page<Task> findByUserIdAndCompletedAndTitle(Integer userId, Boolean completed, String title, Pageable pageable);
 
-    Optional<Integer> findMaxPriorityByUser(String auth0Id);
+    Optional<Integer> findMaxPriorityByUser(Integer userId);
 
-    boolean existsTaskWithPriority(String auth0Id, Integer priority);
+    boolean existsTaskWithPriority(Integer userId, Integer priority);
 
-    void reducePrioritiesAfterCompletion(String auth0Id, Integer removedPriority);
+    void reducePrioritiesAfterCompletion(Integer userId, Integer removedPriority);
 
-    void incrementPriorities(String auth0Id, int from, int to);
+    void incrementPriorities(Integer userId, int from, int to);
 
-    void decrementPriorities(String auth0Id, int from, int to);
+    void decrementPriorities(Integer userId, int from, int to);
 
 }

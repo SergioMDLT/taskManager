@@ -15,27 +15,27 @@ import java.util.List;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain( HttpSecurity http ) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors( cors -> cors.configurationSource(corsConfigurationSource() ))
-            .csrf( csrf -> csrf.disable() )
-            .authorizeHttpRequests( auth -> auth
-                .requestMatchers( "/tasks" ).authenticated()
-                .requestMatchers( "/tasks/**" ).authenticated()
-                .anyRequest().permitAll()
-            )
-            .oauth2ResourceServer( oauth2 -> oauth2.jwt( jwt -> jwt.jwtAuthenticationConverter( jwtAuthenticationConverter() )));
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/tasks").authenticated()
+                        .requestMatchers("/tasks/**").authenticated()
+                        .anyRequest().permitAll())
+                .oauth2ResourceServer(
+                        oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
         return http.build();
     }
 
     private JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthoritiesClaimName( "permissions" );
-        grantedAuthoritiesConverter.setAuthorityPrefix( "ROLE_" );
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("permissions");
+        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter( grantedAuthoritiesConverter );
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
     }
 
@@ -43,23 +43,23 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins( List.of( "http://localhost:4200" ));
-        config.setAllowedMethods( List.of( "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS" ));
-        config.setAllowedHeaders( List.of( "Authorization", "Content-Type" ));
-        config.setAllowCredentials( true );
-        source.registerCorsConfiguration( "/**", config );
-        return new CorsFilter( source );
+        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        config.setAllowCredentials(true);
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 
     private UrlBasedCorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins( List.of( "http://localhost:4200" ));
-        config.setAllowedMethods( List.of( "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS" ));
-        config.setAllowedHeaders( List.of( "Authorization", "Content-Type" ));
-        config.setAllowCredentials( true );
-        source.registerCorsConfiguration( "/**", config );
+        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        config.setAllowCredentials(true);
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
-    
+
 }

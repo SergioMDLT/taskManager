@@ -1,28 +1,31 @@
 package com.example.taskManager.application.task.usecase;
 
 import org.springframework.stereotype.Service;
+import com.example.taskManager.application.task.dtos.GetTaskOutputDto;
+import com.example.taskManager.application.task.mappers.GetTaskApplicationMapper;
+import com.example.taskManager.domain.task.exception.TaskNotFoundException;
 import com.example.taskManager.domain.task.interfaces.TaskRepositoryPort;
-import com.example.taskManager.infrastructure.task.dtos.TaskResponseDTO;
-import com.example.taskManager.infrastructure.task.entities.TaskEntity;
-import com.example.taskManager.infrastructure.task.exception.TaskNotFoundException;
-import com.example.taskManager.infrastructure.task.mappers.TaskMapper;
+import com.example.taskManager.domain.task.models.Task;
 
 @Service
 public class TaskGetterById {
 
-    private final TaskRepositoryPort    taskRepositoryPort;
-    private final TaskMapper            taskMapper;
+    private final GetTaskApplicationMapper  getTaskApplicationMapper;
+    private final TaskRepositoryPort        taskRepositoryPort;
 
-    public TaskGetterById( TaskRepositoryPort taskRepositoryPort, TaskMapper taskMapper ) {
-        this.taskRepositoryPort = taskRepositoryPort;
-        this.taskMapper =     taskMapper;
+    public TaskGetterById(
+        GetTaskApplicationMapper    getTaskApplicationMapper,
+        TaskRepositoryPort          taskRepositoryPort
+    ) {
+        this.getTaskApplicationMapper = getTaskApplicationMapper;
+        this.taskRepositoryPort =       taskRepositoryPort;
     }
 
-    public TaskResponseDTO execute( Integer id ) {
-        TaskEntity task = taskRepositoryPort.findById( id )
-            .orElseThrow(() -> new TaskNotFoundException( "Task not found with ID: " + id ));
+    public GetTaskOutputDto execute(Integer id) {
+        Task task = taskRepositoryPort.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with ID: " + id));
 
-        return taskMapper.toDTO( task );
+        return getTaskApplicationMapper.toDTO(task);
     }
 
 }

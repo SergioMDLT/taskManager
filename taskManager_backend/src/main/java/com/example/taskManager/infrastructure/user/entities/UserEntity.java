@@ -16,19 +16,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table( name = "users" )
-public class User {
+@Table(name = "users")
+public class UserEntity {
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column( unique = true, nullable = false )
+    @Column(unique = true, nullable = false)
     private String auth0Id;
 
-    @Column( unique = true, nullable = false )
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column( nullable = false )
+    @Column(nullable = false)
     private String role;
-    
+
 }
