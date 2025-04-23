@@ -49,18 +49,35 @@ export class TasksTableComponent {
     });
   }
 
-  onDeleteTask( id: number ): void {
-    if( confirm( "Delete forever?" )){
-      this.taskService.deleteTask( id )
-      .subscribe({
-        next: ( ) => {
-          this.toastService.showSuccess( `Task with id ${id} deleted successfully` );
-          this.tasks = this.tasks.filter(( task ) => task.id !== id );
+  onDeleteTask(id: number): void {
+    if (confirm("Delete forever?")) {
+      const deletedTask = this.tasks.find((task) => task.id === id);
+
+      this.taskService.deleteTask(id).subscribe({
+        next: () => {
+          this.toastService.showSuccess(`Task with id ${id} deleted successfully`);
+
+          const removedPriority = deletedTask?.priority;
+
+          if (removedPriority == null) {
+            this.tasks = this.tasks.filter((task) => task.id !== id);
+            return;
+          }
+
+          this.tasks = this.tasks
+            .filter((task) => task.id !== id)
+            .map((task) => ({
+              ...task,
+              priority:
+                task.priority != null && task.priority > removedPriority
+                  ? task.priority - 1
+                  : task.priority,
+            }));
         },
-        error: ( err ) => {
-          console.error( "Error deleting task: ", err);
-          this.toastService.showError( "Error deleting task" );
-        }
+        error: (err) => {
+          console.error("Error deleting task: ", err);
+          this.toastService.showError("Error deleting task");
+        },
       });
     }
   }

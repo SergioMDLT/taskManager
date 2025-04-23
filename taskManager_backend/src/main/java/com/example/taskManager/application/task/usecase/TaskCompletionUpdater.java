@@ -1,9 +1,9 @@
 package com.example.taskManager.application.task.usecase;
 
 import org.springframework.stereotype.Service;
-
 import com.example.taskManager.application.task.dtos.UpdateTaskCompletionInputDto;
 import com.example.taskManager.application.task.dtos.UpdateTaskCompletionOutputDto;
+import com.example.taskManager.application.task.mappers.UpdateTaskCompletionApplicationMapper;
 import com.example.taskManager.domain.task.exception.TaskNotFoundException;
 import com.example.taskManager.domain.task.interfaces.TaskRepositoryPort;
 import com.example.taskManager.domain.task.models.Task;
@@ -12,12 +12,15 @@ import jakarta.transaction.Transactional;
 @Service
 public class TaskCompletionUpdater {
 
-    private final TaskRepositoryPort taskRepositoryPort;
+    private final TaskRepositoryPort                    taskRepositoryPort;
+    private final UpdateTaskCompletionApplicationMapper updateTaskCompletionApplicationMapper;
 
     public TaskCompletionUpdater(
-        TaskRepositoryPort taskRepositoryPort
+        TaskRepositoryPort                      taskRepositoryPort,
+        UpdateTaskCompletionApplicationMapper   updateTaskCompletionApplicationMapper
     ) {
-        this.taskRepositoryPort = taskRepositoryPort;
+        this.taskRepositoryPort =                       taskRepositoryPort;
+        this.updateTaskCompletionApplicationMapper =    updateTaskCompletionApplicationMapper;
     }
 
     @Transactional
@@ -45,7 +48,7 @@ public class TaskCompletionUpdater {
         }
 
         task.setCompleted(!task.getCompleted());
-        return new UpdateTaskCompletionOutputDto(task.getId(), task.getTitle(), task.getDescription(), task.getCompleted(), task.getPriority());
+        return updateTaskCompletionApplicationMapper.toDTO(taskRepositoryPort.save(task));
     }
     
 }
