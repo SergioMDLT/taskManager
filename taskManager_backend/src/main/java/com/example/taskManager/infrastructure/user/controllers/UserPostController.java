@@ -1,6 +1,7 @@
 package com.example.taskManager.infrastructure.user.controllers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import com.example.taskManager.infrastructure.user.mappers.PostUserDtoMapper;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin("http://localhost:4200")
 public class UserPostController {
 
     private final AuthenticatedUserProvider authenticatedUserProvider;
